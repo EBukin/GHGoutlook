@@ -31,3 +31,14 @@ vignettes/*.pdf
 # Temporary files created by R markdown
 *.utf8.md
 *.knit.md
+
+
+# Private documents and data files things
+/old/
+/dicuments/
+*.zip
+
+
+
+
+.Rproj.user

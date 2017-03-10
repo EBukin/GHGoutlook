@@ -34,7 +34,7 @@ build_one_plot <-
       AreaCode_t <- unique(data$AreaCode)
       plot_title <-
         c(AreaCode_t, "_", ItemCode_t, "_", ElementCode_t) %>% 
-        str_replace_na() %>% 
+        str_replace_na(., replacement = " ") %>% 
         str_c(collapse = "")
       plot_sub_title <-
         c(ElementCode_t, " - ", unique(data$ElementName), ";\n",
@@ -44,14 +44,13 @@ build_one_plot <-
       if("extra_text" %in% names(data)) {
         plot_sub_title <- str_c(plot_sub_title, ";\n", str_replace_na(unique(data$extra_text)))
       }
-      ylad_title <- "Value"
+      ylab_title <- "Value"
       xlab_title <- "Year"
       
       # If the variable with units is provided we put them on the plot
       if ("Unit" %in% names(data)) {
-        ylad_title <- 
-          ylad_title %>% 
-          str_c(., ", ", unique(data$Unit))
+        # ylab_title <- 
+          str_c(ylab_title, ", ", str_c(str_replace_na(unique(data$Unit), replacement = " "), collapse = ""))
       } 
     }
     
@@ -120,7 +119,7 @@ build_one_plot <-
       g <-
         g +
         ggtitle(plot_title, plot_sub_title) +
-        ylab(ylad_title) +
+        ylab(ylab_title) +
         xlab(xlab_title) +
         theme(axis.text.x = element_text(angle = 45, hjust = 1))
       

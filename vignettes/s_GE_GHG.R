@@ -34,7 +34,7 @@ load("data/all_fs_emissions.Rdata")
 #   select(-Flag)
 
 # Loaid conversion Mapping 
-conversion <- read_csv("mappingTables/conversions.csv")
+conversion <- read_csv("mappingTables/conversions.csv") %>% filter(Domain == "GE")
 
 # Analysis ---------------------------------------------------------------
 

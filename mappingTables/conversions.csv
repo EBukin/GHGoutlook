@@ -1,3 +1,5 @@
 Domain,Item,OutlookItem,Activity,OutlookActivity,OutlookActivityAdjustment,Emissions,OutlookEmissions,EFLag,GHG
 GR,27,RI,5312,AH,1000,72255,EM_CH4,1,CH4
 GR,27,RI,5312,AH,1000,72315,EM_CH4Eq,1,CH4_CO2Eq
+GE,960,MK,5111,CI,1000,72254,EM_CH4,1,CH4
+GE,976,SH,5111,LI,1000,72254,EM_CH4,1,CH4

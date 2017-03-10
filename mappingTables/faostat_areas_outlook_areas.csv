@@ -1,256 +1,256 @@
-AreaCode,AreaName,OutlookAreaCode,OutlookAreaName,OutlookStatus,OutlookSubRegion,OutlookBigRegion,OutlookSuperRegion
-1,Armenia,ARM,Armenia,Active,ASD,RAP,COS
-2,Afghanistan,AFG,Afghanistan,Active,AS2,RAP,COS
-3,Albania,ALB,Albania,Active,EUE,REU,COS
-4,Algeria,DZA,Algeria,Active,DZA,RNE,COS
-5,American Samoa,ASM,American Samoa,Active,OCE,RAP,COS
-6,Andorra,AND,Andorra,Active,EUW,REU,COS
-7,Angola,AGO,Angola,Active,AGO,RAF,COS
-8,Antigua and Barbuda,ATG,Antigua and Barbuda,Active,SAC,RLC,COS
-9,Argentina,ARG,Argentina,Active,ARG,ARG,AGL
-10,Australia,AUS,Australia,Active,AUS,AUS,AGL
-11,Austria,E15,EU-15,Active,E15,EUN,AGL
-12,Bahamas,BHS,Bahamas,Active,SAC,RLC,COS
-13,Bahrain,BHR,Bahrain,Active,NRE,RNE,COS
-14,Barbados,BRB,Barbados,Active,SAC,RLC,COS
-15,Belgium-Luxembourg,,,,,,
-16,Bangladesh,BGD,Bangladesh,Active,BGD,RAP,COS
-17,Bermuda,,,,,,
-18,Bhutan,BTN,Bhutan,Active,AS2,RAP,COS
-19,Bolivia (Plurinational State of),BOL,Bolivia,Active,SAC,RLC,COS
-20,Botswana,BWA,Botswana,Active,AF1,RAF,COS
-21,Brazil,BRA,Brazil,Active,BRA,BRA,AGL
-22,Aruba,ABW,Aruba,Commented,SAC,RLC,COS
-23,Belize,BLZ,Belize,Active,SAC,RLC,COS
-24,British Indian Ocean Territory,,,,,,
-25,Solomon Islands,SLB,Solomon Islands,Active,OCL,RAP,COS
-26,Brunei Darussalam,BRN,Brunei Darussalam,Active,ASA,RAP,COS
-27,Bulgaria,NMS,New Member States,Active,NMS,EUN,AGL
-28,Myanmar,MMR,Myanmar,Active,MMR,RAP,COS
-29,Burundi,BDI,Burundi,Active,AF2,RAF,COS
-30,Antarctica,,,,,,
-32,Cameroon,CMR,Cameroon,Active,CMR,RAF,COS
-33,Canada,CAN,Canada,Active,CAN,CAN,AGL
-35,Cabo Verde,CPV,Cape Verde,Active,AF1,RAF,COS
-36,Cayman Islands,CYM,Cayman Islands,Commented,SAC,RLC,COS
-37,Central African Republic,CAF,Central African Republic,Active,AF2,RAF,COS
-38,Sri Lanka,LKA,Sri Lanka,Active,ASA,RAP,COS
-39,Chad,TCD,Chad,Active,TCD,RAF,COS
-40,Chile,CHL,Chile,Active,CHL,RLC,COS
-41,"China, mainland",CHN,China,Active,CHN,CHN,AGL
-42,Christmas Island,CXR,Christmas Island,Commented,OCE,RAP,COS
-43,Cocos (Keeling) Islands,CCK,Cocos (Keeling) Islands,Commented,OCE,RAP,COS
-44,Colombia,COL,Colombia,Active,COL,RLC,COS
-45,Comoros,COM,Comoros,Active,AF2,RAF,COS
-46,Congo,COG,Congo,Active,COG,RAF,COS
-47,Cook Islands,COK,Cook Islands,Active,OCE,RAP,COS
-48,Costa Rica,CRI,Costa Rica,Active,SAC,RLC,COS
-49,Cuba,CUB,Cuba,Active,SAC,RLC,COS
-50,Cyprus,NMS,New Member States,Active,NMS,EUN,AGL
-51,Czechoslovakia,,,,,,
-52,Azerbaijan,AZE,"Azerbaijan, Republic of",Active,ASD,RAP,COS
-53,Benin,BEN,Benin,Active,AF2,RAF,COS
-54,Denmark,E15,EU-15,Active,E15,EUN,AGL
-55,Dominica,DMA,Dominica,Active,SAC,RLC,COS
-56,Dominican Republic,DOM,Dominican Republic,Active,SAC,RLC,COS
-57,Belarus,BLR,Belarus,Active,EUE,REU,COS
-58,Ecuador,ECU,Ecuador,Active,SAC,RLC,COS
-59,Egypt,EGY,Egypt,Active,EGY,RNE,COS
-60,El Salvador,SLV,El Salvador,Active,SAC,RLC,COS
-61,Equatorial Guinea,GNQ,Equatorial Guinea,Active,AF2,RAF,COS
-62,Ethiopia PDR,,,,,,
-63,Estonia,NMS,New Member States,Active,NMS,EUN,AGL
-64,Faroe Islands,FRO,Faeroe Islands,Active,EUW,REU,COS
-65,Falkland Islands (Malvinas),FLK,Falkland Islands (Malvinas),Commented,SAC,RLC,COS
-66,Fiji,FJI,Fiji Islands,Active,OCE,RAP,COS
-67,Finland,E15,EU-15,Active,E15,EUN,AGL
-68,France,E15,EU-15,Active,E15,EUN,AGL
-69,French Guiana,GUF,French Guiana,Commented,SAC,RLC,COS
-70,French Polynesia,PYF,French Polynesia,Active,OCE,RAP,COS
-71,French Southern and Antarctic Territories,,,,,,
-72,Djibouti,DJI,Djibouti,Active,AF2,RAF,COS
-73,Georgia,GEO,Georgia,Active,ASD,RAP,COS
-74,Gabon,GAB,Gabon,Active,GAB,RAF,COS
-75,Gambia,GMB,Gambia,Active,AF2,RAF,COS
-79,Germany,E15,EU-15,Active,E15,EUN,AGL
-80,Bosnia and Herzegovina,BIH,Bosnia and Herzegovina,Active,EUE,REU,COS
-81,Ghana,GHA,Ghana,Active,GHA,RAF,COS
-82,Gibraltar,GIB,Gibraltar,Commented,EUW,REU,COS
-83,Kiribati,KIR,Kiribati,Active,OCL,RAP,COS
-84,Greece,E15,EU-15,Active,E15,EUN,AGL
-85,Greenland,,,,,,
-86,Grenada,GRD,Grenada,Active,SAC,RLC,COS
-87,Guadeloupe,GLP,Guadeloupe,Commented,SAC,RLC,COS
-88,Guam,GUM,Guam,Active,OCE,RAP,COS
-89,Guatemala,GTM,Guatemala,Active,SAC,RLC,COS
-90,Guinea,GIN,Guinea,Active,AF2,RAF,COS
-91,Guyana,GUY,Guyana,Active,SAC,RLC,COS
-93,Haiti,HTI,Haiti,Active,HTI,RLC,COS
-94,Holy See,VAT,Holy See,Commented,EUW,REU,COS
-95,Honduras,HND,Honduras,Active,SAC,RLC,COS
-96,"China, Hong Kong SAR",HKG,Hong Kong SAR,Active,ASA,RAP,COS
-97,Hungary,NMS,New Member States,Active,NMS,EUN,AGL
-98,Croatia,NMS,New Member States,Active,NMS,EUN,AGL
-99,Iceland,ISL,Iceland,Active,EUW,REU,COS
-100,India,IND,India,Active,IND,RAP,COS
-101,Indonesia,IDN,Indonesia,Active,IDN,RAP,COS
-102,Iran (Islamic Republic of),IRN,Iran (Islamic Republic of),Active,IRN,RNE,COS
-103,Iraq,IRQ,Iraq,Active,IRQ,RNE,COS
-104,Ireland,E15,EU-15,Active,E15,EUN,AGL
-105,Israel,ISR,Israel,Active,ISR,REU,COS
-106,Italy,E15,EU-15,Active,E15,EUN,AGL
-107,Côte d'Ivoire,CIV,Côte d'Ivoire,Active,CIV,RAF,COS
-108,Kazakhstan,KAZ,Kazakhstan,Active,KAZ,REU,COS
-109,Jamaica,JAM,Jamaica,Active,SAC,RLC,COS
-110,Japan,JPN,Japan,Active,JPN,JPN,AGL
-112,Jordan,JOR,Jordan,Active,NRE,RNE,COS
-113,Kyrgyzstan,KGZ,Kyrgyzstan,Active,ASD,RAP,COS
-114,Kenya,KEN,Kenya,Active,KEN,RAF,COS
-115,Cambodia,KHM,Cambodia,Active,KHM,RAP,COS
-116,Democratic People's Republic of Korea,PRK,Democratic People's Republic of Korea,Active,ASA,RAP,COS
-117,Republic of Korea,KOR,South Korea,Active,KOR,KOR,AGL
-118,Kuwait,KWT,Kuwait,Active,NRE,RNE,COS
-119,Latvia,NMS,New Member States,Active,NMS,EUN,AGL
-120,Lao People's Democratic Republic,LAO,Lao People's Democratic Republic,Active,LAO,RAP,COS
-121,Lebanon,LBN,Lebanon,Active,LBN,RNE,COS
-122,Lesotho,LSO,Lesotho,Active,AF2,RAF,COS
-123,Liberia,LBR,Liberia,Active,AF2,RAF,COS
-124,Libya,LBY,Libyan Arab Jamahiriya,Active,LBY,RNE,COS
-125,Liechtenstein,,,,,,
-126,Lithuania,NMS,New Member States,Active,NMS,EUN,AGL
-127,Marshall Islands,MHL,Marshall Islands,Active,OCE,RAP,COS
-128,"China, Macao SAR",MAC,Macau SAR,Active,ASA,RAP,COS
-129,Madagascar,MDG,Madagascar,Active,MDG,RAF,COS
-130,Malawi,MWI,Malawi,Active,MWI,RAF,COS
-131,Malaysia,MYS,Malaysia,Active,MYS,RAP,COS
-132,Maldives,MDV,Maldives,Active,ASA,RAP,COS
-133,Mali,MLI,Mali,Active,MLI,RAF,COS
-134,Malta,NMS,New Member States,Active,NMS,EUN,AGL
-135,Martinique,MTQ,Martinique,Commented,SAC,RLC,COS
-136,Mauritania,MRT,Mauritania,Active,MRT,RNE,COS
-137,Mauritius,MUS,Mauritius,Active,AF1,RAF,COS
-138,Mexico,MEX,Mexico,Active,MEX,MEX,AGL
-140,Monaco,MCO,Monaco,Active,EUW,REU,COS
-141,Mongolia,MNG,Mongolia,Active,ASA,RAP,COS
-142,Montserrat,MSR,Montserrat,Commented,SAC,RLC,COS
-143,Morocco,MAR,Morocco,Active,MAR,RNE,COS
-144,Mozambique,MOZ,Mozambique,Active,MOZ,RAF,COS
-145,Micronesia (Federated States of),FSM,Micronesia (Federated States of),Active,OCE,RAP,COS
-146,Republic of Moldova,MDA,"Moldova, Republic of",Active,EUE,REU,COS
-147,Namibia,NAM,Namibia,Active,AF1,RAF,COS
-148,Nauru,NRU,Nauru,Active,OCE,RAP,COS
-149,Nepal,NPL,Nepal,Active,AS2,RAP,COS
-150,Netherlands,E15,EU-15,Active,E15,EUN,AGL
-151,Netherlands Antilles (former),ANT,Netherlands Antilles,Commented,SAC,RLC,COS
-153,New Caledonia,NCL,New Caledonia,Active,OCE,RAP,COS
-154,The former Yugoslav Republic of Macedonia,MKD,The former Yugoslav Republic of Macedonia,Active,EUE,REU,COS
-155,Vanuatu,VUT,Vanuatu,Active,OCL,RAP,COS
-156,New Zealand,NZL,New Zealand,Active,NZL,NZL,AGL
-157,Nicaragua,NIC,Nicaragua,Active,SAC,RLC,COS
-158,Niger,NER,Niger,Active,AF2,RAF,COS
-159,Nigeria,NGA,Nigeria,Active,NGA,RAF,COS
-160,Niue,NIU,Niue,Active,OCE,RAP,COS
-161,Norfolk Island,NFK,Norfolk Island,Commented,OCE,RAP,COS
-162,Norway,NOR,Norway,Active,NOR,NOR,AGL
-163,Northern Mariana Islands,MNP,Northern Mariana Islands,Commented,OCE,RAP,COS
-164,Pacific Islands Trust Territory,PIT,Pacific Islands,Commented,OCE,RAP,COS
-165,Pakistan,PAK,Pakistan,Active,PAK,RAP,COS
-166,Panama,PAN,Panama,Active,SAC,RLC,COS
-167,Czech Republic,NMS,New Member States,Active,NMS,EUN,AGL
-168,Papua New Guinea,PNG,Papua New Guinea,Active,OCE,RAP,COS
-169,Paraguay,PRY,Paraguay,Active,PRY,RLC,COS
-170,Peru,PER,Peru,Active,PER,RLC,COS
-171,Philippines,PHL,Philippines,Active,PHL,RAP,COS
-172,Pitcairn Islands,PCN,Pitcairn Islands,Commented,OCE,RAP,COS
-173,Poland,NMS,New Member States,Active,NMS,EUN,AGL
-174,Portugal,E15,EU-15,Active,E15,EUN,AGL
-175,Guinea-Bissau,GNB,Guinea-Bissau,Active,AF2,RAF,COS
-176,Timor-Leste,TLS,Timor-Leste,Active,AS2,RAP,COS
-177,Puerto Rico,PRI,Puerto Rico,Active,SAC,RLC,COS
-178,Eritrea,ERI,Eritrea,Active,AF2,RAF,COS
-179,Qatar,QAT,Qatar,Active,NRE,RNE,COS
-180,Palau,PLW,Palau,Active,OCE,RAP,COS
-181,Zimbabwe,ZWE,Zimbabwe,Active,ZWE,RAF,COS
-182,Réunion,REU,Réunion,Commented,AF1,RAF,COS
-183,Romania,NMS,New Member States,Active,NMS,EUN,AGL
-184,Rwanda,RWA,Rwanda,Active,RWA,RAF,COS
-185,Russian Federation,RUS,Russia,Active,RUS,RUS,AGL
-186,Serbia and Montenegro,SRM,Serbia+Montenegro,Commented,EUE,REU,COS
-187,"Saint Helena, Ascension and Tristan da Cunha",SHN,Saint Helena,Active,AF1,RAF,COS
-188,Saint Kitts and Nevis,KNA,Saint Kitts and Nevis,Active,SAC,RLC,COS
-189,Saint Lucia,LCA,Saint Lucia,Active,SAC,RLC,COS
-190,Saint Pierre and Miquelon,,,,,,
-191,Saint Vincent and the Grenadines,VCT,Saint Vincent and the Grenadines,Active,SAC,RLC,COS
-192,San Marino,SMR,San Marino,Active,EUW,REU,COS
-193,Sao Tome and Principe,STP,Sao Tome and Principe,Active,AF2,RAF,COS
-194,Saudi Arabia,SAU,Saudi Arabia,Active,SAU,RNE,COS
-195,Senegal,SEN,Senegal,Active,SEN,RAF,COS
-196,Seychelles,SYC,Seychelles,Active,AF1,RAF,COS
-197,Sierra Leone,SLE,Sierra Leone,Active,AF2,RAF,COS
-198,Slovenia,NMS,New Member States,Active,NMS,EUN,AGL
-199,Slovakia,NMS,New Member States,Active,NMS,EUN,AGL
-200,Singapore,SGP,Singapore,Active,ASA,RAP,COS
-201,Somalia,SOM,Somalia,Active,SOM,RAF,COS
-202,South Africa,ZAF,South Africa,Active,ZAF,RAF,COS
-203,Spain,E15,EU-15,Active,E15,EUN,AGL
-205,Western Sahara,ESH,Western Sahara,Active,AF1,RAF,COS
-206,Sudan (former),SDN,Sudan,Active,SDN,RAF,COS
-207,Suriname,SUR,Suriname,Active,SAC,RLC,COS
-208,Tajikistan,TJK,Tajikistan,Active,ASD,RAP,COS
-209,Swaziland,SWZ,Swaziland,Active,AF1,RAF,COS
-210,Sweden,E15,EU-15,Active,E15,EUN,AGL
-211,Switzerland,CHE,Switzerland,Active,CHE,CHE,AGL
-212,Syrian Arab Republic,SYR,Syrian Arab Republic,Active,NRE,RNE,COS
-213,Turkmenistan,TKM,Turkmenistan,Active,ASD,RAP,COS
-214,"China, Taiwan Province of",TWN,Taiwan Province of China,Active,ASA,RAP,COS
-215,United Republic of Tanzania,TZA,United Republic of Tanzania,Active,TZA,RAF,COS
-216,Thailand,THA,Thailand,Active,THA,RAP,COS
-217,Togo,TGO,Togo,Active,AF2,RAF,COS
-218,Tokelau,TKL,Tokelau,Active,OCE,RAP,COS
-219,Tonga,TON,Tonga,Active,OCE,RAP,COS
-220,Trinidad and Tobago,TTO,Trinidad and Tobago,Active,SAC,RLC,COS
-221,Oman,OMN,Oman,Active,NRE,RNE,COS
-222,Tunisia,TUN,Tunisia,Active,TUN,RNE,COS
-223,Turkey,TUR,Turkey,Active,TUR,REU,COS
-224,Turks and Caicos Islands,TCA,Turks and Caicos Islands,Commented,SAC,RLC,COS
-225,United Arab Emirates,ARE,United Arab Emirates,Active,NRE,RNE,COS
-226,Uganda,UGA,Uganda,Active,UGA,RAF,COS
-227,Tuvalu,TUV,Tuvalu,Active,OCL,RAP,COS
-228,USSR,,,,,,
-229,United Kingdom,E15,EU-15,Active,E15,EUN,AGL
-230,Ukraine,UKR,Ukraine,Active,UKR,REU,COS
-231,United States of America,USA,United States,Active,USA,USA,AGL
-233,Burkina Faso,BFA,Burkina Faso,Active,BFA,RAF,COS
-234,Uruguay,URY,Uruguay,Active,URY,RLC,COS
-235,Uzbekistan,UZB,Uzbekistan,Active,ASD,RAP,COS
-236,Venezuela (Bolivarian Republic of),VEN,Venezuela,Active,SAC,RLC,COS
-237,Viet Nam,VNM,Viet Nam,Active,VNM,RAP,COS
-238,Ethiopia,ETH,Ethiopia,Active,ETH,RAF,COS
-239,British Virgin Islands,VGB,British Virgin Islands,Commented,SAC,RLC,COS
-240,United States Virgin Islands,VIR,United States Virgin Islands,Commented,SAC,RLC,COS
-242,Wake Island,,,,,,
-243,Wallis and Futuna Islands,WLF,Wallis and Futuna Islands,Active,OCE,RAP,COS
-244,Samoa,WSM,Samoa,Active,OCE,RAP,COS
-248,Yugoslav SFR,,,,,,
-249,Yemen,YEM,Yemen,Active,YEM,RNE,COS
-250,Democratic Republic of the Congo,COD,Democratic Republic of the Congo,Active,COD,RAF,COS
-251,Zambia,ZMB,Zambia,Active,ZMB,RAF,COS
-252,Unspecified,,,,,,
-255,Belgium,E15,EU-15,Active,E15,EUN,AGL
-256,Luxembourg,E15,EU-15,Active,E15,EUN,AGL
-258,Anguilla,AIA,Anguilla,Commented,SAC,RLC,COS
-259,Channel Islands,,,,,,
-260,Svalbard and Jan Mayen Islands,,,,,,
-264,Isle of Man,,,,,,
-270,Mayotte,MYT,Mayotte,Active,AF1,RAF,COS
-272,Serbia,SRB,Serbia,Active,EUE,REU,COS
-273,Montenegro,MNE,Montenegro,Active,EUE,REU,COS
-276,Sudan,,,,,,
-277,South Sudan,,,,,,
-279,Curaçao,,,,,,
-280,Sint Maarten (Dutch Part),,,,,,
-281,Saint-Martin (French Part),,,,,,
-299,Occupied Palestinian Territory,PSE,"Palestine, Occupied Tr.",Active,NRE,RNE,COS
-351,China,,,,,,
-357,China (exc. Hong Kong & Macao),,,,,,
-5000,World,WLD,World,Active,WLD,WLD,WLD
+AreaCode,AreaName,OutlookAreaCode,OutlookAreaName,OutlookStatus,OutlookSubRegion,OutlookBigRegion,OutlookSuperRegion,OutlookSEAsia
+1,Armenia,ARM,Armenia,Active,ASD,RAP,COS,RestOfTheWorld
+2,Afghanistan,AFG,Afghanistan,Active,AS2,RAP,COS,RestOfTheWorld
+3,Albania,ALB,Albania,Active,EUE,REU,COS,RestOfTheWorld
+4,Algeria,DZA,Algeria,Active,DZA,RNE,COS,RestOfTheWorld
+5,American Samoa,ASM,American Samoa,Active,OCE,RAP,COS,RestOfTheWorld
+6,Andorra,AND,Andorra,Active,EUW,REU,COS,RestOfTheWorld
+7,Angola,AGO,Angola,Active,AGO,RAF,COS,RestOfTheWorld
+8,Antigua and Barbuda,ATG,Antigua and Barbuda,Active,SAC,RLC,COS,RestOfTheWorld
+9,Argentina,ARG,Argentina,Active,ARG,ARG,AGL,RestOfTheWorld
+10,Australia,AUS,Australia,Active,AUS,AUS,AGL,RestOfTheWorld
+11,Austria,E15,EU-15,Active,E15,EUN,AGL,RestOfTheWorld
+12,Bahamas,BHS,Bahamas,Active,SAC,RLC,COS,RestOfTheWorld
+13,Bahrain,BHR,Bahrain,Active,NRE,RNE,COS,RestOfTheWorld
+14,Barbados,BRB,Barbados,Active,SAC,RLC,COS,RestOfTheWorld
+15,Belgium-Luxembourg,,,,,,,
+16,Bangladesh,BGD,Bangladesh,Active,BGD,RAP,COS,RestOfTheWorld
+17,Bermuda,,,,,,,
+18,Bhutan,BTN,Bhutan,Active,AS2,RAP,COS,RestOfTheWorld
+19,Bolivia (Plurinational State of),BOL,Bolivia,Active,SAC,RLC,COS,RestOfTheWorld
+20,Botswana,BWA,Botswana,Active,AF1,RAF,COS,RestOfTheWorld
+21,Brazil,BRA,Brazil,Active,BRA,BRA,AGL,RestOfTheWorld
+22,Aruba,ABW,Aruba,Commented,SAC,RLC,COS,RestOfTheWorld
+23,Belize,BLZ,Belize,Active,SAC,RLC,COS,RestOfTheWorld
+24,British Indian Ocean Territory,,,,,,,
+25,Solomon Islands,SLB,Solomon Islands,Active,OCL,RAP,COS,RestOfTheWorld
+26,Brunei Darussalam,BRN,Brunei Darussalam,Active,ASA,RAP,COS,RestOfTheWorld
+27,Bulgaria,NMS,New Member States,Active,NMS,EUN,AGL,RestOfTheWorld
+28,Myanmar,MMR,Myanmar,Active,MMR,RAP,COS,OutlookSEAsia
+29,Burundi,BDI,Burundi,Active,AF2,RAF,COS,RestOfTheWorld
+30,Antarctica,,,,,,,
+32,Cameroon,CMR,Cameroon,Active,CMR,RAF,COS,RestOfTheWorld
+33,Canada,CAN,Canada,Active,CAN,CAN,AGL,RestOfTheWorld
+35,Cabo Verde,CPV,Cape Verde,Active,AF1,RAF,COS,RestOfTheWorld
+36,Cayman Islands,CYM,Cayman Islands,Commented,SAC,RLC,COS,RestOfTheWorld
+37,Central African Republic,CAF,Central African Republic,Active,AF2,RAF,COS,RestOfTheWorld
+38,Sri Lanka,LKA,Sri Lanka,Active,ASA,RAP,COS,RestOfTheWorld
+39,Chad,TCD,Chad,Active,TCD,RAF,COS,RestOfTheWorld
+40,Chile,CHL,Chile,Active,CHL,RLC,COS,RestOfTheWorld
+41,"China, mainland",CHN,China,Active,CHN,CHN,AGL,RestOfTheWorld
+42,Christmas Island,CXR,Christmas Island,Commented,OCE,RAP,COS,RestOfTheWorld
+43,Cocos (Keeling) Islands,CCK,Cocos (Keeling) Islands,Commented,OCE,RAP,COS,RestOfTheWorld
+44,Colombia,COL,Colombia,Active,COL,RLC,COS,RestOfTheWorld
+45,Comoros,COM,Comoros,Active,AF2,RAF,COS,RestOfTheWorld
+46,Congo,COG,Congo,Active,COG,RAF,COS,RestOfTheWorld
+47,Cook Islands,COK,Cook Islands,Active,OCE,RAP,COS,RestOfTheWorld
+48,Costa Rica,CRI,Costa Rica,Active,SAC,RLC,COS,RestOfTheWorld
+49,Cuba,CUB,Cuba,Active,SAC,RLC,COS,RestOfTheWorld
+50,Cyprus,NMS,New Member States,Active,NMS,EUN,AGL,RestOfTheWorld
+51,Czechoslovakia,,,,,,,
+52,Azerbaijan,AZE,"Azerbaijan, Republic of",Active,ASD,RAP,COS,RestOfTheWorld
+53,Benin,BEN,Benin,Active,AF2,RAF,COS,RestOfTheWorld
+54,Denmark,E15,EU-15,Active,E15,EUN,AGL,RestOfTheWorld
+55,Dominica,DMA,Dominica,Active,SAC,RLC,COS,RestOfTheWorld
+56,Dominican Republic,DOM,Dominican Republic,Active,SAC,RLC,COS,RestOfTheWorld
+57,Belarus,BLR,Belarus,Active,EUE,REU,COS,RestOfTheWorld
+58,Ecuador,ECU,Ecuador,Active,SAC,RLC,COS,RestOfTheWorld
+59,Egypt,EGY,Egypt,Active,EGY,RNE,COS,RestOfTheWorld
+60,El Salvador,SLV,El Salvador,Active,SAC,RLC,COS,RestOfTheWorld
+61,Equatorial Guinea,GNQ,Equatorial Guinea,Active,AF2,RAF,COS,RestOfTheWorld
+62,Ethiopia PDR,,,,,,,
+63,Estonia,NMS,New Member States,Active,NMS,EUN,AGL,RestOfTheWorld
+64,Faroe Islands,FRO,Faeroe Islands,Active,EUW,REU,COS,RestOfTheWorld
+65,Falkland Islands (Malvinas),FLK,Falkland Islands (Malvinas),Commented,SAC,RLC,COS,RestOfTheWorld
+66,Fiji,FJI,Fiji Islands,Active,OCE,RAP,COS,RestOfTheWorld
+67,Finland,E15,EU-15,Active,E15,EUN,AGL,RestOfTheWorld
+68,France,E15,EU-15,Active,E15,EUN,AGL,RestOfTheWorld
+69,French Guiana,GUF,French Guiana,Commented,SAC,RLC,COS,RestOfTheWorld
+70,French Polynesia,PYF,French Polynesia,Active,OCE,RAP,COS,RestOfTheWorld
+71,French Southern and Antarctic Territories,,,,,,,
+72,Djibouti,DJI,Djibouti,Active,AF2,RAF,COS,RestOfTheWorld
+73,Georgia,GEO,Georgia,Active,ASD,RAP,COS,RestOfTheWorld
+74,Gabon,GAB,Gabon,Active,GAB,RAF,COS,RestOfTheWorld
+75,Gambia,GMB,Gambia,Active,AF2,RAF,COS,RestOfTheWorld
+79,Germany,E15,EU-15,Active,E15,EUN,AGL,RestOfTheWorld
+80,Bosnia and Herzegovina,BIH,Bosnia and Herzegovina,Active,EUE,REU,COS,RestOfTheWorld
+81,Ghana,GHA,Ghana,Active,GHA,RAF,COS,RestOfTheWorld
+82,Gibraltar,GIB,Gibraltar,Commented,EUW,REU,COS,RestOfTheWorld
+83,Kiribati,KIR,Kiribati,Active,OCL,RAP,COS,RestOfTheWorld
+84,Greece,E15,EU-15,Active,E15,EUN,AGL,RestOfTheWorld
+85,Greenland,,,,,,,
+86,Grenada,GRD,Grenada,Active,SAC,RLC,COS,RestOfTheWorld
+87,Guadeloupe,GLP,Guadeloupe,Commented,SAC,RLC,COS,RestOfTheWorld
+88,Guam,GUM,Guam,Active,OCE,RAP,COS,RestOfTheWorld
+89,Guatemala,GTM,Guatemala,Active,SAC,RLC,COS,RestOfTheWorld
+90,Guinea,GIN,Guinea,Active,AF2,RAF,COS,RestOfTheWorld
+91,Guyana,GUY,Guyana,Active,SAC,RLC,COS,RestOfTheWorld
+93,Haiti,HTI,Haiti,Active,HTI,RLC,COS,RestOfTheWorld
+94,Holy See,VAT,Holy See,Commented,EUW,REU,COS,RestOfTheWorld
+95,Honduras,HND,Honduras,Active,SAC,RLC,COS,RestOfTheWorld
+96,"China, Hong Kong SAR",HKG,Hong Kong SAR,Active,ASA,RAP,COS,RestOfTheWorld
+97,Hungary,NMS,New Member States,Active,NMS,EUN,AGL,RestOfTheWorld
+98,Croatia,NMS,New Member States,Active,NMS,EUN,AGL,RestOfTheWorld
+99,Iceland,ISL,Iceland,Active,EUW,REU,COS,RestOfTheWorld
+100,India,IND,India,Active,IND,RAP,COS,RestOfTheWorld
+101,Indonesia,IDN,Indonesia,Active,IDN,RAP,COS,OutlookSEAsia
+102,Iran (Islamic Republic of),IRN,Iran (Islamic Republic of),Active,IRN,RNE,COS,RestOfTheWorld
+103,Iraq,IRQ,Iraq,Active,IRQ,RNE,COS,RestOfTheWorld
+104,Ireland,E15,EU-15,Active,E15,EUN,AGL,RestOfTheWorld
+105,Israel,ISR,Israel,Active,ISR,REU,COS,RestOfTheWorld
+106,Italy,E15,EU-15,Active,E15,EUN,AGL,RestOfTheWorld
+107,Côte d'Ivoire,CIV,Côte d'Ivoire,Active,CIV,RAF,COS,RestOfTheWorld
+108,Kazakhstan,KAZ,Kazakhstan,Active,KAZ,REU,COS,RestOfTheWorld
+109,Jamaica,JAM,Jamaica,Active,SAC,RLC,COS,RestOfTheWorld
+110,Japan,JPN,Japan,Active,JPN,JPN,AGL,RestOfTheWorld
+112,Jordan,JOR,Jordan,Active,NRE,RNE,COS,RestOfTheWorld
+113,Kyrgyzstan,KGZ,Kyrgyzstan,Active,ASD,RAP,COS,RestOfTheWorld
+114,Kenya,KEN,Kenya,Active,KEN,RAF,COS,RestOfTheWorld
+115,Cambodia,KHM,Cambodia,Active,KHM,RAP,COS,OutlookSEAsia
+116,Democratic People's Republic of Korea,PRK,Democratic People's Republic of Korea,Active,ASA,RAP,COS,RestOfTheWorld
+117,Republic of Korea,KOR,South Korea,Active,KOR,KOR,AGL,RestOfTheWorld
+118,Kuwait,KWT,Kuwait,Active,NRE,RNE,COS,RestOfTheWorld
+119,Latvia,NMS,New Member States,Active,NMS,EUN,AGL,RestOfTheWorld
+120,Lao People's Democratic Republic,LAO,Lao People's Democratic Republic,Active,LAO,RAP,COS,OutlookSEAsia
+121,Lebanon,LBN,Lebanon,Active,LBN,RNE,COS,RestOfTheWorld
+122,Lesotho,LSO,Lesotho,Active,AF2,RAF,COS,RestOfTheWorld
+123,Liberia,LBR,Liberia,Active,AF2,RAF,COS,RestOfTheWorld
+124,Libya,LBY,Libyan Arab Jamahiriya,Active,LBY,RNE,COS,RestOfTheWorld
+125,Liechtenstein,,,,,,,
+126,Lithuania,NMS,New Member States,Active,NMS,EUN,AGL,RestOfTheWorld
+127,Marshall Islands,MHL,Marshall Islands,Active,OCE,RAP,COS,RestOfTheWorld
+128,"China, Macao SAR",MAC,Macau SAR,Active,ASA,RAP,COS,RestOfTheWorld
+129,Madagascar,MDG,Madagascar,Active,MDG,RAF,COS,RestOfTheWorld
+130,Malawi,MWI,Malawi,Active,MWI,RAF,COS,RestOfTheWorld
+131,Malaysia,MYS,Malaysia,Active,MYS,RAP,COS,OutlookSEAsia
+132,Maldives,MDV,Maldives,Active,ASA,RAP,COS,RestOfTheWorld
+133,Mali,MLI,Mali,Active,MLI,RAF,COS,RestOfTheWorld
+134,Malta,NMS,New Member States,Active,NMS,EUN,AGL,RestOfTheWorld
+135,Martinique,MTQ,Martinique,Commented,SAC,RLC,COS,RestOfTheWorld
+136,Mauritania,MRT,Mauritania,Active,MRT,RNE,COS,RestOfTheWorld
+137,Mauritius,MUS,Mauritius,Active,AF1,RAF,COS,RestOfTheWorld
+138,Mexico,MEX,Mexico,Active,MEX,MEX,AGL,RestOfTheWorld
+140,Monaco,MCO,Monaco,Active,EUW,REU,COS,RestOfTheWorld
+141,Mongolia,MNG,Mongolia,Active,ASA,RAP,COS,RestOfTheWorld
+142,Montserrat,MSR,Montserrat,Commented,SAC,RLC,COS,RestOfTheWorld
+143,Morocco,MAR,Morocco,Active,MAR,RNE,COS,RestOfTheWorld
+144,Mozambique,MOZ,Mozambique,Active,MOZ,RAF,COS,RestOfTheWorld
+145,Micronesia (Federated States of),FSM,Micronesia (Federated States of),Active,OCE,RAP,COS,RestOfTheWorld
+146,Republic of Moldova,MDA,"Moldova, Republic of",Active,EUE,REU,COS,RestOfTheWorld
+147,Namibia,NAM,Namibia,Active,AF1,RAF,COS,RestOfTheWorld
+148,Nauru,NRU,Nauru,Active,OCE,RAP,COS,RestOfTheWorld
+149,Nepal,NPL,Nepal,Active,AS2,RAP,COS,RestOfTheWorld
+150,Netherlands,E15,EU-15,Active,E15,EUN,AGL,RestOfTheWorld
+151,Netherlands Antilles (former),ANT,Netherlands Antilles,Commented,SAC,RLC,COS,RestOfTheWorld
+153,New Caledonia,NCL,New Caledonia,Active,OCE,RAP,COS,RestOfTheWorld
+154,The former Yugoslav Republic of Macedonia,MKD,The former Yugoslav Republic of Macedonia,Active,EUE,REU,COS,RestOfTheWorld
+155,Vanuatu,VUT,Vanuatu,Active,OCL,RAP,COS,RestOfTheWorld
+156,New Zealand,NZL,New Zealand,Active,NZL,NZL,AGL,RestOfTheWorld
+157,Nicaragua,NIC,Nicaragua,Active,SAC,RLC,COS,RestOfTheWorld
+158,Niger,NER,Niger,Active,AF2,RAF,COS,RestOfTheWorld
+159,Nigeria,NGA,Nigeria,Active,NGA,RAF,COS,RestOfTheWorld
+160,Niue,NIU,Niue,Active,OCE,RAP,COS,RestOfTheWorld
+161,Norfolk Island,NFK,Norfolk Island,Commented,OCE,RAP,COS,RestOfTheWorld
+162,Norway,NOR,Norway,Active,NOR,NOR,AGL,RestOfTheWorld
+163,Northern Mariana Islands,MNP,Northern Mariana Islands,Commented,OCE,RAP,COS,RestOfTheWorld
+164,Pacific Islands Trust Territory,PIT,Pacific Islands,Commented,OCE,RAP,COS,RestOfTheWorld
+165,Pakistan,PAK,Pakistan,Active,PAK,RAP,COS,RestOfTheWorld
+166,Panama,PAN,Panama,Active,SAC,RLC,COS,RestOfTheWorld
+167,Czech Republic,NMS,New Member States,Active,NMS,EUN,AGL,RestOfTheWorld
+168,Papua New Guinea,PNG,Papua New Guinea,Active,OCE,RAP,COS,RestOfTheWorld
+169,Paraguay,PRY,Paraguay,Active,PRY,RLC,COS,RestOfTheWorld
+170,Peru,PER,Peru,Active,PER,RLC,COS,RestOfTheWorld
+171,Philippines,PHL,Philippines,Active,PHL,RAP,COS,OutlookSEAsia
+172,Pitcairn Islands,PCN,Pitcairn Islands,Commented,OCE,RAP,COS,RestOfTheWorld
+173,Poland,NMS,New Member States,Active,NMS,EUN,AGL,RestOfTheWorld
+174,Portugal,E15,EU-15,Active,E15,EUN,AGL,RestOfTheWorld
+175,Guinea-Bissau,GNB,Guinea-Bissau,Active,AF2,RAF,COS,RestOfTheWorld
+176,Timor-Leste,TLS,Timor-Leste,Active,AS2,RAP,COS,RestOfTheWorld
+177,Puerto Rico,PRI,Puerto Rico,Active,SAC,RLC,COS,RestOfTheWorld
+178,Eritrea,ERI,Eritrea,Active,AF2,RAF,COS,RestOfTheWorld
+179,Qatar,QAT,Qatar,Active,NRE,RNE,COS,RestOfTheWorld
+180,Palau,PLW,Palau,Active,OCE,RAP,COS,RestOfTheWorld
+181,Zimbabwe,ZWE,Zimbabwe,Active,ZWE,RAF,COS,RestOfTheWorld
+182,Réunion,REU,Réunion,Commented,AF1,RAF,COS,RestOfTheWorld
+183,Romania,NMS,New Member States,Active,NMS,EUN,AGL,RestOfTheWorld
+184,Rwanda,RWA,Rwanda,Active,RWA,RAF,COS,RestOfTheWorld
+185,Russian Federation,RUS,Russia,Active,RUS,RUS,AGL,RestOfTheWorld
+186,Serbia and Montenegro,SRM,Serbia+Montenegro,Commented,EUE,REU,COS,RestOfTheWorld
+187,"Saint Helena, Ascension and Tristan da Cunha",SHN,Saint Helena,Active,AF1,RAF,COS,RestOfTheWorld
+188,Saint Kitts and Nevis,KNA,Saint Kitts and Nevis,Active,SAC,RLC,COS,RestOfTheWorld
+189,Saint Lucia,LCA,Saint Lucia,Active,SAC,RLC,COS,RestOfTheWorld
+190,Saint Pierre and Miquelon,,,,,,,
+191,Saint Vincent and the Grenadines,VCT,Saint Vincent and the Grenadines,Active,SAC,RLC,COS,RestOfTheWorld
+192,San Marino,SMR,San Marino,Active,EUW,REU,COS,RestOfTheWorld
+193,Sao Tome and Principe,STP,Sao Tome and Principe,Active,AF2,RAF,COS,RestOfTheWorld
+194,Saudi Arabia,SAU,Saudi Arabia,Active,SAU,RNE,COS,RestOfTheWorld
+195,Senegal,SEN,Senegal,Active,SEN,RAF,COS,RestOfTheWorld
+196,Seychelles,SYC,Seychelles,Active,AF1,RAF,COS,RestOfTheWorld
+197,Sierra Leone,SLE,Sierra Leone,Active,AF2,RAF,COS,RestOfTheWorld
+198,Slovenia,NMS,New Member States,Active,NMS,EUN,AGL,RestOfTheWorld
+199,Slovakia,NMS,New Member States,Active,NMS,EUN,AGL,RestOfTheWorld
+200,Singapore,SGP,Singapore,Active,ASA,RAP,COS,RestOfTheWorld
+201,Somalia,SOM,Somalia,Active,SOM,RAF,COS,RestOfTheWorld
+202,South Africa,ZAF,South Africa,Active,ZAF,RAF,COS,RestOfTheWorld
+203,Spain,E15,EU-15,Active,E15,EUN,AGL,RestOfTheWorld
+205,Western Sahara,ESH,Western Sahara,Active,AF1,RAF,COS,RestOfTheWorld
+206,Sudan (former),SDN,Sudan,Active,SDN,RAF,COS,RestOfTheWorld
+207,Suriname,SUR,Suriname,Active,SAC,RLC,COS,RestOfTheWorld
+208,Tajikistan,TJK,Tajikistan,Active,ASD,RAP,COS,RestOfTheWorld
+209,Swaziland,SWZ,Swaziland,Active,AF1,RAF,COS,RestOfTheWorld
+210,Sweden,E15,EU-15,Active,E15,EUN,AGL,RestOfTheWorld
+211,Switzerland,CHE,Switzerland,Active,CHE,CHE,AGL,RestOfTheWorld
+212,Syrian Arab Republic,SYR,Syrian Arab Republic,Active,NRE,RNE,COS,RestOfTheWorld
+213,Turkmenistan,TKM,Turkmenistan,Active,ASD,RAP,COS,RestOfTheWorld
+214,"China, Taiwan Province of",TWN,Taiwan Province of China,Active,ASA,RAP,COS,RestOfTheWorld
+215,United Republic of Tanzania,TZA,United Republic of Tanzania,Active,TZA,RAF,COS,RestOfTheWorld
+216,Thailand,THA,Thailand,Active,THA,RAP,COS,OutlookSEAsia
+217,Togo,TGO,Togo,Active,AF2,RAF,COS,RestOfTheWorld
+218,Tokelau,TKL,Tokelau,Active,OCE,RAP,COS,RestOfTheWorld
+219,Tonga,TON,Tonga,Active,OCE,RAP,COS,RestOfTheWorld
+220,Trinidad and Tobago,TTO,Trinidad and Tobago,Active,SAC,RLC,COS,RestOfTheWorld
+221,Oman,OMN,Oman,Active,NRE,RNE,COS,RestOfTheWorld
+222,Tunisia,TUN,Tunisia,Active,TUN,RNE,COS,RestOfTheWorld
+223,Turkey,TUR,Turkey,Active,TUR,REU,COS,RestOfTheWorld
+224,Turks and Caicos Islands,TCA,Turks and Caicos Islands,Commented,SAC,RLC,COS,RestOfTheWorld
+225,United Arab Emirates,ARE,United Arab Emirates,Active,NRE,RNE,COS,RestOfTheWorld
+226,Uganda,UGA,Uganda,Active,UGA,RAF,COS,RestOfTheWorld
+227,Tuvalu,TUV,Tuvalu,Active,OCL,RAP,COS,RestOfTheWorld
+228,USSR,,,,,,,
+229,United Kingdom,E15,EU-15,Active,E15,EUN,AGL,RestOfTheWorld
+230,Ukraine,UKR,Ukraine,Active,UKR,REU,COS,RestOfTheWorld
+231,United States of America,USA,United States,Active,USA,USA,AGL,RestOfTheWorld
+233,Burkina Faso,BFA,Burkina Faso,Active,BFA,RAF,COS,RestOfTheWorld
+234,Uruguay,URY,Uruguay,Active,URY,RLC,COS,RestOfTheWorld
+235,Uzbekistan,UZB,Uzbekistan,Active,ASD,RAP,COS,RestOfTheWorld
+236,Venezuela (Bolivarian Republic of),VEN,Venezuela,Active,SAC,RLC,COS,RestOfTheWorld
+237,Viet Nam,VNM,Viet Nam,Active,VNM,RAP,COS,OutlookSEAsia
+238,Ethiopia,ETH,Ethiopia,Active,ETH,RAF,COS,RestOfTheWorld
+239,British Virgin Islands,VGB,British Virgin Islands,Commented,SAC,RLC,COS,RestOfTheWorld
+240,United States Virgin Islands,VIR,United States Virgin Islands,Commented,SAC,RLC,COS,RestOfTheWorld
+242,Wake Island,,,,,,,
+243,Wallis and Futuna Islands,WLF,Wallis and Futuna Islands,Active,OCE,RAP,COS,RestOfTheWorld
+244,Samoa,WSM,Samoa,Active,OCE,RAP,COS,RestOfTheWorld
+248,Yugoslav SFR,,,,,,,
+249,Yemen,YEM,Yemen,Active,YEM,RNE,COS,RestOfTheWorld
+250,Democratic Republic of the Congo,COD,Democratic Republic of the Congo,Active,COD,RAF,COS,RestOfTheWorld
+251,Zambia,ZMB,Zambia,Active,ZMB,RAF,COS,RestOfTheWorld
+252,Unspecified,,,,,,,
+255,Belgium,E15,EU-15,Active,E15,EUN,AGL,RestOfTheWorld
+256,Luxembourg,E15,EU-15,Active,E15,EUN,AGL,RestOfTheWorld
+258,Anguilla,AIA,Anguilla,Commented,SAC,RLC,COS,RestOfTheWorld
+259,Channel Islands,,,,,,,
+260,Svalbard and Jan Mayen Islands,,,,,,,
+264,Isle of Man,,,,,,,
+270,Mayotte,MYT,Mayotte,Active,AF1,RAF,COS,RestOfTheWorld
+272,Serbia,SRB,Serbia,Active,EUE,REU,COS,RestOfTheWorld
+273,Montenegro,MNE,Montenegro,Active,EUE,REU,COS,RestOfTheWorld
+276,Sudan,,,,,,,
+277,South Sudan,,,,,,,
+279,Curaçao,,,,,,,
+280,Sint Maarten (Dutch Part),,,,,,,
+281,Saint-Martin (French Part),,,,,,,
+299,Occupied Palestinian Territory,PSE,"Palestine, Occupied Tr.",Active,NRE,RNE,COS,RestOfTheWorld
+351,China,,,,,,,
+357,China (exc. Hong Kong & Macao),,,,,,,
+5000,World,WLD,World,Active,WLD,WLD,WLD,

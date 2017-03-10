@@ -2,7 +2,7 @@
 combine_plot_data <-
   function(outlook,
            faostat,
-           areas = c("WLD", "COS", "CHN", "KHM", "IDN", "LAO", "MYS", "MMR", "PHL", "THA", "VNM"),
+           areas = c("WLD", "RestOfTheWorld", "OutlookSEAsia", "CHN", "KHM", "IDN", "LAO", "MYS", "MMR", "PHL", "THA", "VNM"),
            n_page = 12) {
     dfp <-
       outlook %>%

@@ -1,4 +1,6 @@
-Item,OutlookItem,Activity,OutlookActivity,OutlookActivityAdjustment
-27,RI,5312,AH,1000
-960,MK,5111,CI,1000
-976,SH,5111,LI,1000
+ItemCode,ElementCode,OutlookElementCode,OutlookAdjustment
+RI,5312,AH,0.001
+RI,72255,EmCH4,
+RI,72315,EmCO2eq,
+MK,5111,CI,0.001
+SH,5111,LI,0.001

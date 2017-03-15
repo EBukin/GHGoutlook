@@ -1,6 +1,6 @@
-ItemCode,ElementCode,OutlookElementCode,OutlookAdjustment
-RI,5312,AH,0.001
-RI,72255,EmCH4,
-RI,72315,EmCO2eq,
-MK,5111,CI,0.001
-SH,5111,LI,0.001
+Domain,ItemCode,ElementCode,OutlookElementCode,OutlookAdjustment
+GR,RI,5312,AH,0.001
+GR,RI,72255,EM_CH4,
+GR,RI,72315,EM_CH4Eq,
+GE,MK,5111,CI,0.001
+GE,SH,5111,LI,0.001

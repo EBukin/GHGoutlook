@@ -27,7 +27,7 @@
 
 #' Installing packages
 #+results='hide', message = FALSE, warning = FALSE
-packs <- c("plyr", "tidyverse", "dplyr", "tidyr","readxl", "stringr", "DT",
+packs <- c("plyr", "tidyverse", "dplyr", "tidyr","readxl", "stringr", "DT", "rmarkdown",
            "gridExtra", "grid", "ggplot2", "ggthemes", "scales", "devtools", "gridGraphics")
 lapply(packs[!packs %in% installed.packages()[,1]], 
        install.packages,
@@ -54,7 +54,7 @@ if(!file.exists(olRDFile)) {
     select(AreaCode, ItemCode, ElementCode, Year, Value)
   save(ol, file = olRDFile)
 } else {
-  # load(file = olRDFile)
+  load(file = olRDFile)
 }
 
 #' ## FAOSTAT data
@@ -102,7 +102,7 @@ if(!file.exists(fsRDFile)) {
            Year, Value, Unit, ElementName, ItemName)
   save(fs, its, els, file = fsRDFile) 
 } else {
-  # load("data/all_fs_emissions.Rdata")
+  load("data/all_fs_emissions.Rdata")
 }
 
 
@@ -122,6 +122,7 @@ elementsMTFile <- "mappingTables/fs_outlook_elements_mt.csv"
 elementsMT <- 
   read_csv(elementsMTFile, 
            col_types = cols(
+             Domain = col_character(),
              ItemCode = col_character(),
              ElementCode = col_integer(),
              OutlookElementCode = col_character(),
@@ -221,7 +222,7 @@ map_fs_data <-
     # Mapping and aggregating elements
     fsol <-
       fsol %>%
-      left_join(elementMT, by = c("ItemCode", "ElementCode")) %>%
+      left_join(elementMT, by = c("Domain", "ItemCode", "ElementCode")) %>%
       filter(!is.na(OutlookElementCode)) %>%
       mutate(
         ElementCode = OutlookElementCode,
@@ -330,38 +331,120 @@ adjust_outlook_activity <-
 
 # CONTINUE HERE!!!! -------------------------------------------------------
 
-
-reestimate_ef <- 
-  function(fsSubset, emissionMT = emissionsMT) {
+reestimate_emissions <- 
+  function(fsSubset, outlookAct = outlookActivity, emissionMT = emissionsMT) {
+    
     emissionMTSubset <- 
       emissionMT %>% 
-      filtert(Domain %in% unique(fsSubset$Domain))
+      filter(Domain %in% unique(fsSubset$Domain))
+    
+    fsEF <-
+      fsSubset %>% 
+      spread(ElementCode, Value)
+    
+    d_ply(emissionMTSubset, 
+          .(Domain, Emissions), 
+          function(x) {
+            efExpr <- setNames(str_c(x$OutlookEmissions, " / ", x$ActivityElement), 
+                               str_c("EF_", x$OutlookEmissions))
+            
+            if(all(c(x$ActivityElement, x$OutlookEmissions) %in% names(fsEFActivity)))
+              fsEF <<- mutate_(.data = fsEF, .dots = efExpr)
+            
+          })
+    
+    # Recalculating emissions
+    # Expanding data to all years we need
+    fsEF %>%
+      select_(.dots = c(
+        "Domain",
+        "AreaCode",
+        "ItemCode",
+        "Year",
+        str_c("EF_", emissionMTSubset$OutlookEmissions)
+      )) %>%
+      filter(Year < 2016) %>%
+      right_join(
+        outlookAct %>%
+          select(Domain, AreaCode, ItemCode, Year) %>%
+          distinct(),
+        by = c("Domain", "AreaCode", "ItemCode", "Year")
+      ) %>%
+      arrange(Domain, AreaCode, ItemCode, Year) %>%
+      complete(Domain, AreaCode, ItemCode, Year) %>%
+      gather(Element, EmissionsFactor, 5:length(.)) %>%
+      
+      # Adding activity data
+      left_join(rename(outlookAct, Activity = Value), 
+                by = c("Domain", "AreaCode", "ItemCode", "Year")) %>% 
+      
+      # Interpolating missing emissions factors repeating the last known value
+      group_by(Domain, AreaCode, ItemCode, Element) %>% 
+      arrange(Domain, AreaCode, ItemCode, Element, Year) %>%
+      fill(EmissionsFactor) %>% 
+      
+      # Recalculating emisions
+      ungroup() %>% 
+      mutate(Value = EmissionsFactor * Activity,
+             ElementCode = str_sub(Element, 4)) %>% 
+      select(Domain, AreaCode, ItemCode, Year, ElementCode, d.source, Value) %>% 
+      
+      # Adding activity data
+      bind_rows(outlookAct)
   }
 
-fsdf <- fs %>% filter(Year %in% Years, Domain == "GR")
-
 fsSubset <-
-  map_fs_data(fsdf) %>%
-  filter(AreaCode == "WLD")
+  fs %>% 
+  filter(Year %in% Years, Domain == "GR") %>% 
+  map_fs_data #%>%
+  #filter(AreaCode == "WLD") 
+
+outlookActivity <-
+  ol %>%
+  subset_outlook(fsSubset) %>%
+  bind_rows(
+    agg_ol_regions(., regionVar = "OutlookSEAsia") %>%
+      filter(!AreaCode %in% unique(subset_outlook(ol, fsSubset)[["AreaCode"]]))
+  )
+
+outlookAdjActivity <-
+  ol %>%
+  subset_outlook(fsSubset) %>%
+  bind_rows(
+    agg_ol_regions(., regionVar = "OutlookSEAsia") %>%
+      filter(!AreaCode %in% unique(subset_outlook(ol, fsSubset)[["AreaCode"]]))
+  ) %>% 
+  adjust_outlook_activity 
 
 
-emissionMTSubset <- 
-  emissionsMT %>% 
-  filter(Domain %in% unique(fsSubset$Domain))
+# Reestimating activity data
+outlookAdjEmissions <- 
+  reestimate_emissions(fsSubset, 
+                       outlookAdjActivity)
 
-fsEFActivity <-
-  fsSubset %>% 
-  # Mapping activity element as activity data
-  left_join(emissionMTSubset %>% 
-              select(ActivityElement) %>% 
-              mutate(Element = "Activity") %>% 
-              distinct(),
-            c("ElementCode" = "ActivityElement")) %>% 
-  mutate(ElementCode = ifelse(!is.na(Element), Element, ElementCode)) %>% 
-  select(-Element) %>% 
-  
-  # Spreading Activity data and emissions for recalculating Emission Factors
-  spread(ElementCode, Value)
+# Reestimating activity data
+outlookEmissions <- 
+  reestimate_emissions(fsSubset, 
+                       outlookActivity)
+
+QAdata <-
+  outlookEmissions %>%
+  mutate(d.source = "not adjusted Outlook") %>% 
+  bind_rows(outlookAdjEmissions) %>% 
+  bind_rows(fsSubset)
+
+
+plot_group(QAdata %>% filter(AreaCode == "OutlookSEAsia"),
+           n_page = 1,
+           groups_var = c("ElementCode", "ItemCode"),
+           plots_var = "AreaCode"
+)
+
+
+
+
+
+
 
 
 

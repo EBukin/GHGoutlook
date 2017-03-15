@@ -30,7 +30,7 @@
 
 #' Installing packages
 #+results='hide', message = FALSE, warning = FALSE
-packs <- c("plyr", "tidyverse", "dplyr", "tidyr","readxl", "stringr", "pander",
+packs <- c("plyr", "tidyverse", "dplyr", "tidyr","readxl", "stringr", "DT",
            "gridExtra", "grid", "ggplot2", "ggthemes", "scales", "devtools")
 lapply(packs[!packs %in% installed.packages()[,1]], 
        install.packages,
@@ -216,8 +216,9 @@ areaMT <- read_csv("mappingTables/faostat_areas_outlook_areas.csv",
                      OutlookSuperRegion = col_character(),
                      OutlookSEAsia = col_character()
                    ))
-# knitr::kable(areaMT, digits=0, 
-#              col.names = c("FS Code", "FS Name", "Outlook Code", "Outlook name", 
-#                            "Status", "Sub Regions", "Big Five", "Super Region", 
-#                            "Southeast Asia"))
-pander(areaMT)
+knitr::kable(areaMT, digits=0,
+             col.names = c("FS Code", "FS Name", "Outlook Code", "Outlook name",
+                           "Status", "Sub Regions", "Big Five", "Super Region",
+                           "Southeast Asia"))
+# pander(areaMT)
+# datatable(areaMT)

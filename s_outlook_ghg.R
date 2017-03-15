@@ -3,35 +3,32 @@
 #' author: Eduard Bukin
 #' date: 14 March 2017
 #' output:
-#'    prettydoc::html_pretty:
+#'      prettydoc::html_pretty:
 #'        toc: yes
 #'        theme: architect
-#'        highlight: github
-#' 
 #' ---
 
+
 #' *****
-#' # Purpose
+#' # Process
 #' The purpose of this document is to reproduce GHG emissions data in FAOSTAT
 #'   using as the activity data the OECD-FAO Agricultural Outlook numbers.
 #' 
-#' ## Process
-#' The process is consists of several steps:  
-#' 
-#'  1. Mapping (aggregating) FAOSTAT areas to the Outlook areas    
-#'  2. Mapping (aggregating) FAOSTAT items (activity data and GHG emissions) to the Outlook items (only activity data)  
-#'  3. Andjusting Outlook activities data to the FAOSTAT historical levels (if needed)  
-#'  4. QA of the activity data projections on the per country/area basis.  
-#'  5. Reestimating implied emissions factors based on aggregated areas and items in the FAOSTAT  
-#'  6. Extrapolating implied emissions factors for the projected years fllowing one of the predefined rules  
-#'  7. Reestimating projections of the GHG emission based in the Outlook activity data and new Implicit emissions factors  
+#' The process is consists of several steps:   
+#'  1. Mapping (aggregating) FAOSTAT areas, items and elements to the Outlook
+#'  2. Adjusting Outlook activities data to the FAOSTAT historical levels (if needed)  
+#'  3. QA of the activity data projections on the per country/area basis.  
+#'  4. Reestimating implied emissions factors based on aggregated areas and items in the FAOSTAT  
+#'  5. Extrapolating implied emissions factors for the projected years fllowing one of the predefined rules  
+#'  6. Reestimating projections of the GHG emission based in the 
+#'     Outlook activity data and new Implicit emissions factors  
 #' 
 #' # Setup
 
 #' Installing packages
 #+results='hide', message = FALSE, warning = FALSE
 packs <- c("plyr", "tidyverse", "dplyr", "tidyr","readxl", "stringr", "DT",
-           "gridExtra", "grid", "ggplot2", "ggthemes", "scales", "devtools")
+           "gridExtra", "grid", "ggplot2", "ggthemes", "scales", "devtools", "gridGraphics")
 lapply(packs[!packs %in% installed.packages()[,1]], 
        install.packages,
        dependencies = TRUE)
@@ -44,13 +41,10 @@ options(scipen=20)
 l_ply(str_c("R/", list.files("R/", pattern="*.R")), source)
 
 
-#' # Implementation
+#' # Loading data
 
 
-#' ## 0. Loading data
-
-
-#' ### Outlook data
+#' ## Outlook data
 #'  First we load all outlook data. If there is no data savein the Rdata file we reload all data from the CSV file.
 olRDFile <- "data/outlook.Rdata"
 if(!file.exists(olRDFile)) {
@@ -60,10 +54,10 @@ if(!file.exists(olRDFile)) {
     select(AreaCode, ItemCode, ElementCode, Year, Value)
   save(ol, file = olRDFile)
 } else {
-  load(file = olRDFile)
+  # load(file = olRDFile)
 }
 
-#' ### FAOSTAT data
+#' ## FAOSTAT data
 #' Next step is loading all FAOSTAT data. Since FAOSTAT data combines data from 
 #'   multiple domains, we laod it all in on .Rdata file. In csae if there is no such file,
 #'   we reload all data from each domain specific file and save it in the R data file for further use.
@@ -108,11 +102,11 @@ if(!file.exists(fsRDFile)) {
            Year, Value, Unit, ElementName, ItemName)
   save(fs, its, els, file = fsRDFile) 
 } else {
-  load("data/all_fs_emissions.Rdata")
+  # load("data/all_fs_emissions.Rdata")
 }
 
 
-#' ### Mapping tables
+#' ## Mapping tables
 #' Besides data from Outlook and FAOSTAT, we also need specific mapping tables
 #'   which explain mappings from FAOSTAT to Outlook areas and items.
 itemsMTFile <- "mappingTables/fs_outlook_items_mt.csv"
@@ -128,11 +122,10 @@ elementsMTFile <- "mappingTables/fs_outlook_elements_mt.csv"
 elementsMT <- 
   read_csv(elementsMTFile, 
            col_types = cols(
-             Item = col_integer(),
-             OutlookItem = col_character(),
-             Activity = col_integer(),
-             OutlookActivity = col_character(),
-             OutlookActivityAdjustment = col_integer()
+             ItemCode = col_character(),
+             ElementCode = col_integer(),
+             OutlookElementCode = col_character(),
+             OutlookAdjustment = col_double()
            ))
 
 #' Table `emissionsMT` describes mapping and assumption behind projection of the 
@@ -144,56 +137,303 @@ emissionsMT <-
              Domain = col_character(),
              Emissions = col_integer(),
              OutlookEmissions = col_character(),
+             ActivityElement = col_character(),
              EFLag = col_integer(),
              GHG = col_character()
            ))
 
-#' ### Initialising additional variables
+#' ## Initialising additional variables
 #' Years of the FAOSTAT data that we are interested in:
 Years <- c(2000:2030)
 
-#' ### Cleaning loaded data TBC
-#' Filtering FAOSTAT and OUTLOOK data to the list of important Items and Elements
-
-#' ## 1. Mapping FAOSTAT Areas to Outlook
 #' 
-#' In this subsection we aggregate FAOSTAT areas to the outlook aggregates of 
-#'   individual countries and regions. For aggregating we use funcitons `agg_ol_regions`
-#'   and `map_fs2ol` and a mappin table listed in the annexes below.
-fsOlAgg <-
-  fs %>%
-  filter(Year %in% Years) %>%
-  map_fs2ol() %>%
-  agg_ol_regions(., regionVar = "OutlookSubRegion", allCountries = F)
-fsOlAgg <-
-  fsOlAgg %>%
-  bind_rows(agg_ol_regions(., regionVar = "OutlookBigRegion") %>%
-              filter(!AreaCode %in% unique(fsOlAgg[["AreaCode"]])))
-fsOlAgg <-
-  fsOlAgg %>%
-  bind_rows(
-    agg_ol_regions(., regionVar = "OutlookSuperRegion") %>%
-      filter(!AreaCode %in% unique(fsOlAgg[["AreaCode"]]))
-  ) 
-fsOlAgg <-
-  fsOlAgg %>%
-  bind_rows(
-    agg_ol_regions(., regionVar = "OutlookSEAsia") %>%
-      filter(!AreaCode %in% unique(fsOlAgg[["AreaCode"]]))
-  ) %>% 
-  select(Domain, AreaCode, ItemCode, ElementCode, Year, Value)
-
-#' ## Mapping FAOSTAT Items to the Outlook
+#' # Implementing the process  
 #' 
-#' In the 
+#' We perfrom all following calculations for one domain at the time. That allows 
+#'    us to apply the same functions and approach to every domain.
+#'    
+#' The process is organized in the followin way:
+#'     
+#'  1. Mapping (aggregating) FAOSTAT areas, items and elements to the Outlook  
+#'  2. Adjusting outlook activity data to the levels of mapped and aggregated FAOSTAT
+#'  3. Recalculating implied emissions factors for reaggregated areas 
+#'  
+#' Exesuting all theses spets is possible with the help of the following functions:
+#' 
+#' ### Function for mapping faostat data  
+#'  
+#' This functoin maps FAOSTAT data to the Outlook Items, Elements and Areas.
+#' 
+#' Besides simple mapping, we also adjust some Items/Elements in order to 
+#'   maintain the same units in the FAOSTAT and Outlook data. Adjustment is 
+#'   specified in the mapping table in the column `OutlookAdjustment`. 
+#'   This is nececery for such cases like area harvested, whic is expresse 
+#'   in Outlook in ha, but in FAOSTAT it is measured in 1000 ha.   
+#'   
+#' *  `fsdf` is the faostat dataset relevant to one domain only  
+#' *  `itemsMT` is the Items mapping table  
+#' *  `elementsMT` is the elemetns mapping table  
+map_fs_data <-
+  function(fsdf, itemMT = itemsMT, elementMT = elementsMT) {
+    # Mapping and aggregating areas
+    fsol <-
+      fsdf %>%
+      filter(Year %in% Years) %>%
+      map_fs2ol() %>%
+      agg_ol_regions(., regionVar = "OutlookSubRegion", allCountries = F)
+    fsol <-
+      fsol %>%
+      bind_rows(
+        agg_ol_regions(., regionVar = "OutlookBigRegion") %>%
+          filter(!AreaCode %in% unique(fsol[["AreaCode"]]))
+      )
+    fsol <-
+      fsol %>%
+      bind_rows(
+        agg_ol_regions(., regionVar = "OutlookSuperRegion") %>%
+          filter(!AreaCode %in% unique(fsol[["AreaCode"]]))
+      )
+    fsol <-
+      fsol %>%
+      bind_rows(agg_ol_regions(., regionVar = "OutlookSEAsia") %>%
+                  filter(!AreaCode %in% unique(fsol[["AreaCode"]]))) %>%
+      select(Domain, AreaCode, ItemCode, ElementCode, Year, Value)
+    
+    # Mapping and aggregating items
+    fsol <-
+      fsol %>%
+      left_join(itemMT, "ItemCode") %>%
+      filter(!is.na(OutlookItemCode)) %>%
+      mutate(
+        ItemCode = OutlookItemCode,
+        Value = ifelse(
+          !is.na(ItemCodeAggSign) &
+            ItemCodeAggSign == "-",
+          -Value,
+          Value
+        )
+      ) %>%
+      select(-OutlookItemCode,-ItemCodeAggSign) %>%
+      group_by_(.dots = names(.)[!names(.) %in% c("Value")]) %>%
+      summarise(Value = sum(Value, na.rm = TRUE)) %>%
+      ungroup() 
+    
+    # Mapping and aggregating elements
+    fsol <-
+      fsol %>%
+      left_join(elementMT, by = c("ItemCode", "ElementCode")) %>%
+      filter(!is.na(OutlookElementCode)) %>%
+      mutate(
+        ElementCode = OutlookElementCode,
+        Value = ifelse(!is.na(OutlookAdjustment), Value * OutlookAdjustment, Value)
+      ) %>%
+      select(-OutlookElementCode, -OutlookAdjustment) %>%
+      mutate(d.source = "Faostat")
+    fsol
+  }
+
+#' ### Functoin for subsetting outlook 
+#'
+#'The subsetting is made based on the list of items and elements used in one 
+#'   FAOSTAT domain. In practice it subsets outlook data to the list
+#'   of items and elements specified in one of the mapping tables.
+subset_outlook <-
+  function(oldf,
+           fsdf = fsSubset,
+           d.sourceName = "Outlook") {
+    oldf %>%
+      right_join(
+        fsdf %>%
+          select(AreaCode, ItemCode, ElementCode, Domain) %>%
+          distinct(),
+        c("AreaCode", "ItemCode", "ElementCode")
+      ) %>%
+      mutate(d.source = "Outlook") %>%
+      filter(!is.na(Value))
+  }
+
+
+#' ### Function for adjusting Outlook activities data to the FAOSTAT historical levels  
+#' 
+#' 
+#'   
+#' Binding FAOSTAT and OUTLOOK data together and performing adjustments only 
+#'      in the case if absolute gifference between FAOSTAT numbers an Outlook 
+#'      numbers is greater than 5%. In addition we adjust data based on `nLag` years 
+#'      average in the pre projection period
+#'   
+#'   Preparing Outlook data
+adjust_outlook_activity <-
+  function(olSubset,
+           fsSub = fsSubset,
+           nLag = 3,
+           diffThreshold = 0) {
+    # Formula for calculating lagged average differences
+    lagged_dif <-
+      str_c("(", str_c("lag(diff,", 1:nLag, ")", collapse = " + "), ") / ", nLag)
+    
+    activity <-
+      
+      # Binding Outlook and FAOSTAT data
+      right_join(
+        spread(fsSub, d.source, Value) %>% filter(Year < 2016),
+        spread(olSubset, d.source, Value),
+        by = c("AreaCode", "ItemCode", "ElementCode", "Domain", "Year")
+      ) %>%
+      filter(!is.na(Outlook)) %>%
+      
+      # Introducing grouping
+      group_by_(.dots = names(.)[!names(.) %in% c("Domain", "Year", "Faostat", "Outlook")]) %>%
+      mutate(diff = Outlook / Faostat)
+    
+    # defining starting years of differences projections
+    diff_proj <-
+      activity %>%
+      select(Domain, AreaCode, ItemCode, ElementCode, Year, diff) %>%
+      filter(is.na(diff)) %>%
+      filter(Year == min(Year)) %>%
+      select(-diff) %>%
+      mutate(Proj = TRUE)
+    
+    # Adjusting data
+    activity <-
+      activity %>%
+      left_join(diff_proj,
+                by = c("Domain", "AreaCode", "ItemCode", "ElementCode", "Year")) %>%
+      mutate(Proj = ifelse(!is.na(Proj), TRUE, FALSE)) %>%
+      mutate_(.dots = setNames(str_c("ifelse(Proj,", lagged_dif, ", diff)"), "diff")) %>%
+      
+      # Adding variable which specifies if we need to adjust anything based on the
+      #   Value of the difference compare to the diffThreshold
+      mutate(
+        Proj = ifelse(Proj & abs(diff - 1) > diffThreshold, TRUE, FALSE),
+        Proj = any(Proj, na.rm = TRUE)
+      ) %>%
+      
+      # Extrapolating last value of the difference
+      fill(diff) %>%
+      
+      # Adjusting projections if neededs
+      mutate(Outlook = if_else(Proj, Outlook / diff, Outlook)) %>%
+      ungroup() %>%
+      select(-diff,-Proj,-Faostat) %>%
+      gather(d.source, Value, Outlook)
+    
+    # Returning output
+    activity %>% 
+      filter(!is.na(Value))
+  }
+
+#' ### Funciton for recalculating GHG implicit emissions factors
+#' 
+#' GHG implicit emissions factors are calculated base on the activity data and 
+
+# CONTINUE HERE!!!! -------------------------------------------------------
+
+
+reestimate_ef <- 
+  function(fsSubset, emissionMT = emissionsMT) {
+    emissionMTSubset <- 
+      emissionMT %>% 
+      filtert(Domain %in% unique(fsSubset$Domain))
+  }
+
+fsdf <- fs %>% filter(Year %in% Years, Domain == "GR")
+
+fsSubset <-
+  map_fs_data(fsdf) %>%
+  filter(AreaCode == "WLD")
+
+
+emissionMTSubset <- 
+  emissionsMT %>% 
+  filter(Domain %in% unique(fsSubset$Domain))
+
+fsEFActivity <-
+  fsSubset %>% 
+  # Mapping activity element as activity data
+  left_join(emissionMTSubset %>% 
+              select(ActivityElement) %>% 
+              mutate(Element = "Activity") %>% 
+              distinct(),
+            c("ElementCode" = "ActivityElement")) %>% 
+  mutate(ElementCode = ifelse(!is.na(Element), Element, ElementCode)) %>% 
+  select(-Element) %>% 
+  
+  # Spreading Activity data and emissions for recalculating Emission Factors
+  spread(ElementCode, Value)
 
 
 
 
+#' # Testing functions 
+# fsdf <- fs %>% filter(Year %in% Years, Domain == "GR")
+# 
+# fsSubset <- 
+#   map_fs_data(fsdf) #%>% 
+#   #filter(AreaCode == "WLD")
+# 
+# olSubset <- 
+#   ol %>% 
+#   subset_outlook(fsSubset) %>% 
+#   bind_rows(
+#     agg_ol_regions(., regionVar = "OutlookSEAsia") %>%
+#       filter(!AreaCode %in% unique(olSubset[["AreaCode"]]))
+#   )
+# 
+# QAdata <-
+#   olSubset %>% 
+#   adjust_outlook_activity  %>% 
+#   bind_rows(olSubset %>% mutate(d.source = "old Outlook")) %>% 
+#   bind_rows(fsSubset)
+# 
+# 
+# plot_group(QAdata %>% filter(AreaCode == "OutlookSEAsia"),
+#            n_page = 1,
+#            groups_var = c("ElementCode", "ItemCode"),
+#            plots_var = "AreaCode"
+# )
 
 
 
-#'------------------------------------------------------------------------------
+#' ## QA of the adjusted activity data
+#+echo = FALSE, results = 'hide', message = FALSE
+# QAData <- 
+#   bind_rows(activity, 
+#           activity %>% 
+#             select(AreaCode, ItemCode, ElementCode, Year) %>% 
+#             distinct() %>% 
+#             left_join(fsol) %>% 
+#             filter(!is.na(Value)),
+#           olSubset %>% 
+#             mutate(d.source = "old_Outlook") %>% 
+#             right_join(activity %>% 
+#                          select(AreaCode, ItemCode, ElementCode, Year) %>% 
+#                          distinct())%>% 
+#             filter(!is.na(Value))) %>%
+#   filter(AreaCode %in% c("WLD", "RestOfTheWorld", "OutlookSEAsia", "CHN", "KHM", 
+#                          "IDN", "LAO", "MYS", "MMR", "PHL", "THA", "VNM"))
+# plot_group(filter(QAData, AreaCode %in% c("WLD", "RestOfTheWorld", "OutlookSEAsia", "CHN")),
+#   n_page = 4,
+#   groups_var = c("ElementCode", "ItemCode"),
+#   plots_var = "AreaCode"
+# )
+# 
+# plot_group(filter(QAData, AreaCode %in% c("KHM", "IDN", "LAO", "MYS")),
+#   n_page = 4,
+#   groups_var = c("ElementCode", "ItemCode"),
+#   plots_var = "AreaCode"
+# )
+# 
+# plot_group(filter(QAData, AreaCode %in% c("MMR", "PHL", "THA", "VNM")),
+#   n_page = 4,
+#   groups_var = c("ElementCode", "ItemCode"),
+#   plots_var = "AreaCode"
+# )
+# 
+
+#'
+#'
 #' # Annexes
 #' 
 #' ## Funciton `map_fs2ol` for aggregating outlook countries to the regions
@@ -204,6 +444,7 @@ fsOlAgg <-
 
 #' ## Mapping tabels from FAOSTAT countries to Outlook countries and regions
 #+echo=FALSE
+options(markdown.HTML.header = system.file('misc', 'datatables.html', package = 'knitr'))
 areaMT <- read_csv("mappingTables/faostat_areas_outlook_areas.csv", 
                    col_types = cols(
                      AreaCode = col_integer(),
@@ -216,9 +457,24 @@ areaMT <- read_csv("mappingTables/faostat_areas_outlook_areas.csv",
                      OutlookSuperRegion = col_character(),
                      OutlookSEAsia = col_character()
                    ))
-knitr::kable(areaMT, digits=0,
-             col.names = c("FS Code", "FS Name", "Outlook Code", "Outlook name",
-                           "Status", "Sub Regions", "Big Five", "Super Region",
-                           "Southeast Asia"))
-# pander(areaMT)
-# datatable(areaMT)
+
+# Changing encoding
+Encoding(areaMT$AreaName) <- "latin1"
+Encoding(areaMT$OutlookAreaName) <- "latin1"
+# Printing the table
+datatable(areaMT, 
+          rownames=FALSE, 
+          colnames = 
+            c("FS Code", "FS Name", "Outlook Code", "Outlook name",
+              "Status", "Sub Regions", "Big Five", "Super Region",
+              "Southeast Asia"))
+
+
+#' ## Mapping tabel for mapping FAOSTAT items to the Outlook
+#+echo=FALSE
+datatable(itemsMT, style = 'bootstrap', rownames=FALSE)
+
+#' ## Mapping tabel for mapping FAOSTAT elements to the Outlook
+#+echo=FALSE
+datatable(elementsMT, style = 'bootstrap', rownames=FALSE)
+

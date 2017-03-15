@@ -30,7 +30,7 @@
 
 #' Installing packages
 #+results='hide', message = FALSE, warning = FALSE
-packs <- c("plyr", "tidyverse", "dplyr", "tidyr","readxl", "stringr", 
+packs <- c("plyr", "tidyverse", "dplyr", "tidyr","readxl", "stringr", "pander",
            "gridExtra", "grid", "ggplot2", "ggthemes", "scales", "devtools")
 lapply(packs[!packs %in% installed.packages()[,1]], 
        install.packages,
@@ -60,7 +60,7 @@ if(!file.exists(olRDFile)) {
     select(AreaCode, ItemCode, ElementCode, Year, Value)
   save(ol, file = olRDFile)
 } else {
-  # load(file = olRDFile)
+  load(file = olRDFile)
 }
 
 #' ### FAOSTAT data
@@ -108,7 +108,7 @@ if(!file.exists(fsRDFile)) {
            Year, Value, Unit, ElementName, ItemName)
   save(fs, its, els, file = fsRDFile) 
 } else {
-  #load("data/all_fs_emissions.Rdata")
+  load("data/all_fs_emissions.Rdata")
 }
 
 
@@ -148,6 +148,9 @@ emissionsMT <-
              GHG = col_character()
            ))
 
+#' ### Initialising additional variables
+#' Years of the FAOSTAT data that we are interested in:
+Years <- c(2000:2030)
 
 #' ### Cleaning loaded data TBC
 #' Filtering FAOSTAT and OUTLOOK data to the list of important Items and Elements
@@ -155,31 +158,23 @@ emissionsMT <-
 #' ## 1. Mapping FAOSTAT Areas to Outlook
 #' 
 #' In this subsection we aggregate FAOSTAT areas to the outlook aggregates of 
-#'   individual countries and regions. For aggregating we use funciton `agg_ol_regions`
-#'   and a mappin table listed in the annexes below.
+#'   individual countries and regions. For aggregating we use funcitons `agg_ol_regions`
+#'   and `map_fs2ol` and a mappin table listed in the annexes below.
 fsOlAgg <-
   fs %>%
-  filter(Domain == Domains,
-         ItemCode %in% agItems, 
-         ElementCode %in% agElement, 
-         Year %in% Years) %>%
-  
-  # Mapping to the faostat outlook
+  filter(Year %in% Years) %>%
   map_fs2ol() %>%
   agg_ol_regions(., regionVar = "OutlookSubRegion", allCountries = F)
-
 fsOlAgg <-
   fsOlAgg %>%
   bind_rows(agg_ol_regions(., regionVar = "OutlookBigRegion") %>%
               filter(!AreaCode %in% unique(fsOlAgg[["AreaCode"]])))
-
 fsOlAgg <-
   fsOlAgg %>%
   bind_rows(
     agg_ol_regions(., regionVar = "OutlookSuperRegion") %>%
       filter(!AreaCode %in% unique(fsOlAgg[["AreaCode"]]))
   ) 
-
 fsOlAgg <-
   fsOlAgg %>%
   bind_rows(
@@ -188,7 +183,9 @@ fsOlAgg <-
   ) %>% 
   select(Domain, AreaCode, ItemCode, ElementCode, Year, Value)
 
-
+#' ## Mapping FAOSTAT Items to the Outlook
+#' 
+#' In the 
 
 
 
@@ -199,4 +196,28 @@ fsOlAgg <-
 #'------------------------------------------------------------------------------
 #' # Annexes
 #' 
-#' ## Funciton for aggregating FAOSTAT countries to the regions
+#' ## Funciton `map_fs2ol` for aggregating outlook countries to the regions
+#+code=readLines("r/map_fs2ol.R")
+
+#' ## Funciton `agg_ol_regions` for aggregating outlook countries to the regions
+#+code=readLines("r/agg_ol_regions.R")
+
+#' ## Mapping tabels from FAOSTAT countries to Outlook countries and regions
+#+echo=FALSE
+areaMT <- read_csv("mappingTables/faostat_areas_outlook_areas.csv", 
+                   col_types = cols(
+                     AreaCode = col_integer(),
+                     AreaName = col_character(),
+                     OutlookAreaCode = col_character(),
+                     OutlookAreaName = col_character(),
+                     OutlookStatus = col_character(),
+                     OutlookSubRegion = col_character(),
+                     OutlookBigRegion = col_character(),
+                     OutlookSuperRegion = col_character(),
+                     OutlookSEAsia = col_character()
+                   ))
+# knitr::kable(areaMT, digits=0, 
+#              col.names = c("FS Code", "FS Name", "Outlook Code", "Outlook name", 
+#                            "Status", "Sub Regions", "Big Five", "Super Region", 
+#                            "Southeast Asia"))
+pander(areaMT)

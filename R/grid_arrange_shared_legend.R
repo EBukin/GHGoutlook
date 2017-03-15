@@ -60,6 +60,9 @@ grid_arrange_shared_legend <-
     {
       grid.draw(combined)
       grid.newpage()
+    } else if (!names(dev.cur()) %in% c("RStudioGD", "null device")) {
+      grid.draw(combined)
+      grid.newpage()
     }
     
     

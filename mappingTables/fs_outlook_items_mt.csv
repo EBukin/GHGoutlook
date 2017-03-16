@@ -1,2 +1,18 @@
-ItemCode,OutlookItemCode,ItemCodeAggSign
-27,RI,+
+ItemCode,ItemName,OutlookItemCode,ItemCodeAggSign,Exist
+27,Rice,RI,+,TRUE
+1051,"Swine, breeding",PK,+,TRUE
+1049,"Swine, market",PK,+,TRUE
+976,Sheep,SH,+,TRUE
+1016,Goats,SH,+,TRUE
+961,"Cattle, non-dairy",BV,+,TRUE
+946,Buffaloes,BV,+,TRUE
+960,"Cattle, dairy",MK,+,TRUE
+1107,Asses,EQ,+,FALSE
+1126,Camels,EQ,+,FALSE
+1096,Horses,EQ,+,FALSE
+1177,Llamas,EQ,+,FALSE
+1110,Mules,EQ,+,FALSE
+1053,"Chickens, broilers",PT,+,TRUE
+1052,"Chickens, layers",PT,+,TRUE
+1068,Ducks,PT,+,TRUE
+1079,Turkeys,PT,+,TRUE

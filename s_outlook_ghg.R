@@ -145,7 +145,7 @@ emissionsMT <-
 
 #' ## Initialising additional variables
 #' Years of the FAOSTAT data that we are interested in:
-Years <- c(2000:2030)
+# Years <- c(2000:2030)
 
 #' 
 #' # Implementing the process  
@@ -184,7 +184,7 @@ Years <- c(2000:2030)
 #' *  `itemsMT` is the Items mapping table  
 #' *  `elementsMT` is the elemetns mapping table  
 map_fs_data <-
-  function(fsdf, itemMT = itemsMT, elementMT = elementsMT) {
+  function(fsdf, itemMT = itemsMT, elementMT = elementsMT, fsYears = c(2000:2020)) {
     
     elementMTSpecific <- 
       elementMT %>% 
@@ -199,26 +199,26 @@ map_fs_data <-
     # Mapping and aggregating areas
     fsol <-
       fsdf %>%
-      filter(Year %in% Years) %>%
+      select(Domain, AreaCode, ItemCode, ElementCode, Year, Value) %>%
+      filter(Year %in% fsYears) %>%
       map_fs2ol() %>%
-      agg_ol_regions(., regionVar = "OutlookSubRegion", allCountries = F)
-    fsol <-
-      fsol %>%
-      bind_rows(
-        agg_ol_regions(., regionVar = "OutlookBigRegion") %>%
-          filter(!AreaCode %in% unique(fsol[["AreaCode"]]))
-      )
-    fsol <-
-      fsol %>%
-      bind_rows(
-        agg_ol_regions(., regionVar = "OutlookSuperRegion") %>%
-          filter(!AreaCode %in% unique(fsol[["AreaCode"]]))
-      )
-    fsol <-
-      fsol %>%
-      bind_rows(agg_ol_regions(., regionVar = "OutlookSEAsia") %>%
-                  filter(!AreaCode %in% unique(fsol[["AreaCode"]]))) %>%
-      select(Domain, AreaCode, ItemCode, ElementCode, Year, Value)
+      agg_ol_regions(., regionVar = "OutlookSubRegion", allCountries = F) 
+    # fsol <-
+    #   fsol %>%
+    #   bind_rows(
+    #     agg_ol_regions(., regionVar = "OutlookBigRegion") %>%
+    #       filter(!AreaCode %in% unique(fsol[["AreaCode"]]))
+    #   )
+    # fsol <-
+    #   fsol %>%
+    #   bind_rows(
+    #     agg_ol_regions(., regionVar = "OutlookSuperRegion") %>%
+    #       filter(!AreaCode %in% unique(fsol[["AreaCode"]]))
+    #   )
+    # fsol <-
+    #   fsol %>%
+    #   bind_rows(agg_ol_regions(., regionVar = "OutlookSEAsia") %>%
+    #               filter(!AreaCode %in% unique(fsol[["AreaCode"]]))) 
     
     # Mapping and aggregating items
     fsol <-
@@ -252,7 +252,7 @@ map_fs_data <-
         ) %>%
         select(-OutlookElementCode, -OutlookAdjustment) %>%
         mutate(d.source = "Faostat")
-    }
+    } else {fsolSpecific <- NULL}
     
     if(nrow(elementMTGeneric) > 0) {
       fsolGeneric <-
@@ -267,7 +267,7 @@ map_fs_data <-
         ) %>%
         select(-OutlookElementCode, -OutlookAdjustment) %>%
         mutate(d.source = "Faostat")
-    }
+    } else {fsolGeneric <- NULL}
     
     bind_rows(fsolGeneric, fsolSpecific)
   }
@@ -281,12 +281,13 @@ subset_outlook <-
   function(oldf,
            fsdf = fsSubset,
            d.sourceName = "Outlook") {
+    joinBy <- names(oldf)[names(oldf) %in% c("AreaCode", "ItemCode", "ElementCode", "Domain")]
     oldf %>%
       right_join(
         fsdf %>%
           select(AreaCode, ItemCode, ElementCode, Domain) %>%
           distinct(),
-        c("AreaCode", "ItemCode", "ElementCode")
+        joinBy
       ) %>%
       mutate(d.source = d.sourceName) %>%
       filter(!is.na(Value))
@@ -364,7 +365,7 @@ adjust_outlook_activity <-
 
 #' ### Funciton for recalculating GHG emissions based on constant implied emissions factors
 #' 
-#' With the help of a functoin `reestimate_emissions` we use FAOSTAT data `fsSubset` 
+#' With the help of the functoin `reestimate_emissions` we use FAOSTAT data `fsSubset` 
 #'    mapped and aggregated to the outlook items, areas and element for calculating GHG 
 #'    implicit emissions factors and apply these factors to the activity data `outlookAct` 
 #'    prepared from the outlook projections. Activity data could be adjusted and 
@@ -438,10 +439,11 @@ reestimate_emissions <-
       mutate(Value = EmissionsFactor * Activity,
              ElementCode = str_sub(Element, 4)) %>%
       select(Domain, AreaCode, ItemCode, Year, ElementCode, d.source, Value) %>%
+      filter(!is.na(Value)) %>% 
       
       # Adding activity data
-      bind_rows(outlookAct) %>%
-      filter(!is.na(Value))
+      bind_rows(outlookAct) #%>%
+      # bind_rows(convert_ghg)
   }
 
 #' ### Funciton for estimaintg GHG for missing items
@@ -456,7 +458,7 @@ reestimate_emissions <-
 #' `fsSubset`  Subset of the FAOSTAT data mapped to the outlook items and elements used for 
 #' `itemMT`  items mapping table
 #' `nLag`  number of years to use for average emissinos shares of missing items. 
-#' If 1, last know value will be applied.
+#' 
 estimate_missing_emissions <-
   function(outlookEmissions, fsSubset, itemMT = itemsMT, nLag = 1) {
     
@@ -469,12 +471,16 @@ estimate_missing_emissions <-
       unique()
     
     # Calculaing share of emission for missing items in total emissins of the Domain
-    EmissSharesMissingData <-
+    if(length(missingItems) > 0) {
+      EmissSharesMissingData <-
       ldply(missingItems,
             function(x) {
               
+              # selectFrom <- c("Domain", "AreaCode", "ElementCode",  "Year", "d.source")
+              
               # Using fsSubset data as a dasis data we aggregate all existing items
-              fsSubset %>%
+              # results <- 
+                fsSubset %>%
                 left_join(
                   itemMT %>%
                     select(OutlookItemCode, Exist) %>%
@@ -482,6 +488,7 @@ estimate_missing_emissions <-
                   by = c("ItemCode" = "OutlookItemCode")
                 ) %>%
                 mutate(ItemCode = ifelse(Exist, "Other", ItemCode)) %>%
+                filter(ItemCode %in% c(x, "Other")) %>% 
                 group_by_(.dots = names(.)[!names(.) %in% c("Value")]) %>%
                 summarise(Value = sum(Value)) %>%
                 ungroup() %>%
@@ -493,8 +500,12 @@ estimate_missing_emissions <-
                 spread(ItemCode, Value)  %>%
                 mutate_(.dots = setNames(str_c(x, " / Other"), x)) %>%
                 select(-Other) %>%
-                filter_(.dots = str_c("!is.na(", x, ")")) %>%
-                gather(ItemCode, Share, eval(parse(text = x)))
+                filter_(.dots = str_c("!is.na(", x, ")")) %>% 
+              
+              # results %>%
+                gather_(key_col = "ItemCode", 
+                        value_col = "Share", 
+                        gather_cols = x)#names(results)[!names(results) %in% selectFrom])
             }) %>%
       tbl_df() %>%
       
@@ -507,72 +518,279 @@ estimate_missing_emissions <-
       summarise(Share = mean(Share)) %>% 
       ungroup() %>% 
       select(-d.source)
+      
+      output <- # Estimating emissing data for the missing items.
+        outlookEmissions %>% 
+        
+        # Aggregating all not missing items into one to use it for estimating missing
+        #     emissions
+        filter(!ItemCode %in% missingItems) %>%
+        group_by_(.dots = names(.)[!names(.) %in% c("Value", "ItemCode")]) %>%
+        summarise(Value = sum(Value)) %>% 
+        ungroup() %>% 
+        
+        # Joining emissions shares for the missing items 
+        left_join(EmissSharesMissingData, by = c("Domain", "AreaCode", "ElementCode")) %>% 
+        
+        # Calculating emissins for the missing items and joinign test of the emissins data
+        mutate(Value = Share * Value) %>% 
+        filter(!is.na(Value)) %>% 
+        select(-Share) %>% 
+        bind_rows(outlookEmissions) #%>%
+      # bind_rows(convert_ghg)
+    } else {
+      output <- # Estimating emissing data for the missing items.
+        outlookEmissions
+    }
+    output
+  }
+
+#' Function for converting GHG to the GHG CO2 Equivalents
+#' 
+#' The funciton `convert_ghg` converts GHGs to the CO2 Equivalent
+#' returning only GHG in CO2 Equivalent values.
+convert_ghg <-
+  function(df) {
     
-    # Estimating emissing data for the missing items.
-    outlookEmissions %>% 
-      
-      # Aggregating all not missing items into one to use it for estimating missing
-      #     emissions
-      filter(!ItemCode %in% missingItems) %>%
-      group_by_(.dots = names(.)[!names(.) %in% c("Value", "ItemCode")]) %>%
-      summarise(Value = sum(Value)) %>% 
-      ungroup() %>% 
-      
-      # Joining emissions shares for the missing items 
-      left_join(EmissSharesMissingData, by = c("Domain", "AreaCode", "ElementCode")) %>% 
-      
-      # Calculating emissins for the missing items and joinign test of the emissins data
-      mutate(Value = Share * Value) %>% 
+    # Conversion
+    convs <- 
+      tibble(ElementCode = c("EM_N2O", "EM_CH4", "CO2"), 
+             NewElementCode = c("EM_N2OEq", "EM_CH4Eq", "CO2"),
+             ConversionFactor = c(310, 21, 1))
+    
+    # If number for GHG in CO2 Equivalent were there, remove it. 
+    df <- 
+      df %>% 
+      filter(! ElementCode %in% convs$NewElementCode[1:2])
+    
+    # Converting GHG
+    df %>% 
+      filter(ElementCode %in% c("EM_CH4", "EM_N2O", "CO2")) %>% 
+      left_join(convs, "ElementCode") %>% 
+      mutate(ElementCode = NewElementCode,
+             Value = Value * ConversionFactor) %>% 
+      select(-NewElementCode, - ConversionFactor)%>%
       filter(!is.na(Value)) %>% 
-      select(-Share) %>% 
-      bind_rows(outlookEmissions)
+      bind_rows(df)
+  }
+
+
+#' ### Funciton for aggregating data of one domain by GHG
+#' 
+#' The function `agg_ghg_domains` uses data on ghg emissions, and aggregates 
+#' emissions total for a domain  
+agg_ghg_domains <-
+  function(df, emissionMT = emissionsMT, totDomainName = "GT") {
+    # List of aggregatable emissions
+    allGHG <-
+      c("EM_CH4Eq", "EM_N2OEq", "CO2", "EM_CH4", "EM_N2O")
+    
+    # Aggregaing all available gases
+    df %>%
+      filter(ElementCode %in% allGHG) %>%
+      group_by_(.dots = names(.)[!names(.) %in% c("Value", "ItemCode")]) %>%
+      summarise(Value = sum(Value)) %>%
+      ungroup() %>%
+      mutate(ItemCode = Domain) %>% 
+      mutate(Domain = totDomainName)
+  }
+
+agg_total_emissions <-
+  function(df, emissionMT = emissionsMT) {
+    
+    # List of aggregatable emissions
+    emissions <-
+      tibble(ElementCode = c("EM_CH4Eq", "EM_N2OEq", "CO2"), 
+             NewElementCome = "Emissions_CO2Eq")
+    
+    # Aggregaing all available gases
+    df %>%
+      filter(ElementCode %in% emissions$ElementCode) %>%
+      left_join(emissions, "ElementCode") %>%
+      mutate(ElementCode = NewElementCome) %>% 
+      select(-NewElementCome) %>% 
+      group_by_(.dots = names(.)[!names(.) %in% c("Value")]) %>%
+      summarise(Value = sum(Value)) %>%
+      ungroup() %>% 
+      bind_rows(df)
+  }
+
+#' # Process of re-estimating emissions
+#' 
+#' Bcause the outlook activity data is limited compare to the FAOSTAT we can 
+#'     customise the process of reestimating GHG emissions data only for a subset
+#'     of domains. For other domains, the proces will have to remain manual. 
+#'     
+#' With the funciton `outlook_emissions` we aggregate data for such domains like 
+#'     GM, GE, GU, GP, GR. Estimations are made for all countries and than data 
+#'     is aggregated to the regions.'     
+#'     
+outlook_emissions <-
+  function(fs, ol, DomainName, fsYears = c(2000:2020), useActivity = TRUE) {
+    
+    # Countries list
+    countries <-
+      c("AF1", "AF2", "AGO", "ARG", "AS2", "ASA", "ASD", "AUS", "BFA", "BGD",
+        "BRA", "CAN", "CHE", "CHL", "CHN", "CIV", "CMR", "COD", "COG", "COL",
+        "DZA", "E15", "EGY", "ETH", "EUE", "EUW", "GAB", "GHA", "HTI", "IDN",
+        "IND", "IRN", "IRQ", "ISR", "JPN", "KAZ", "KEN", "KHM", "KOR", "LAO",
+        "LBN", "LBY", "MAR", "MDG", "MEX", "MLI", "MMR", "MOZ", "MRT", "MWI",
+        "MYS", "NGA", "NMS", "NOR", "NRE", "NZL", "OCE", "OCL", "PAK", "PER",
+        "PHL", "PRY", "RUS", "RWA", "SAC", "SAU", "SDN", "SEN", "SOM", "TCD",
+        "THA", "TUN", "TUR", "TZA", "UGA", "UKR", "URY", "USA", "VNM", #"WLD",
+        "YEM", "ZAF", "ZMB", "ZWE")
+      
+    # We are only concearned about subset of countr
+    fsSubset<-
+      fs %>% 
+      filter(Year %in% fsYears, Domain == DomainName) %>% 
+      map_fs_data %>% 
+      filter(AreaCode %in% countries)
+    
+    # Subsetting and aggregating and reestinmating emissions for non adjusted
+    #     Outlook activity data
+    outlookEmissions <-
+      ol %>%
+      subset_outlook(fsSubset, "no adj. Outlook")
+    if (useActivity) {
+      outlookEmissions <-
+        outlookEmissions  %>%
+        reestimate_emissions(fsSubset) %>%
+        estimate_missing_emissions(fsSubset) %>%
+        convert_ghg() %>%
+        distinct()
+    } else {
+      outlookEmissions <-
+        outlookEmissions  %>%
+        estimate_missing_emissions(fsSubset) %>%
+        convert_ghg() %>%
+        distinct()
+    }
+    
+    
+    # Subsetting and aggregating and reestinmating emissions for adjusted
+    #     Outlook activity data
+    outlookAdjEmissions <-
+      ol %>%
+      subset_outlook(fsSubset, "Outlook")
+    
+    if (useActivity) {
+      outlookAdjEmissions <-
+        outlookAdjEmissions  %>%
+        adjust_outlook_activity(fsSubset) %>% 
+        reestimate_emissions(fsSubset) %>%
+        estimate_missing_emissions(fsSubset) %>%
+        convert_ghg() %>%
+        distinct()
+    } else {
+      outlookAdjEmissions <-
+        outlookAdjEmissions  %>%
+        adjust_outlook_activity(fsSubset) %>% 
+        estimate_missing_emissions(fsSubset) %>%
+        convert_ghg() %>%
+        distinct()
+    }
+    
+    # Bind all data convert GHG and aggregate regions
+    bindedData <- 
+      bind_rows(outlookEmissions, outlookAdjEmissions, fsSubset)
+    
+    # Aggregating big five
+    bindedData <-
+      bindedData %>%
+      bind_rows(
+        agg_ol_regions(., regionVar = "OutlookBigRegion") %>%
+          filter(!AreaCode %in% unique(bindedData[["AreaCode"]]))
+      )
+    
+    # Aggregating Cosimo Outlook
+    bindedData <-
+      bindedData %>%
+      bind_rows(
+        agg_ol_regions(., regionVar = "OutlookSuperRegion") %>%
+          filter(!AreaCode %in% unique(bindedData[["AreaCode"]]))
+      )
+    
+    # Aggregating SEA
+    bindedData <-
+      bindedData %>%
+      bind_rows(
+        agg_ol_regions(., regionVar = "OutlookSEAsia") %>%
+          filter(!AreaCode %in% unique(bindedData[["AreaCode"]]))
+      )
+    
+    # Aggregating WLD
+    bindedData <-
+      bindedData %>%
+      bind_rows(
+        agg_ol_regions(., regionVar = "Global") %>%
+          filter(!AreaCode %in% unique(bindedData[["AreaCode"]]))
+      )
+    
+    
+    # Returning all data
+    bindedData
+   
+  }
+
+# Funciton for joining names
+join_names <- 
+  function(df, ItemNamesMT = "mappingTables/itemsNames.csv") {
+    mt <- read_csv(ItemNamesMT)
+    df %>% 
+      left_join(mt, "ItemCode")
   }
 
 
 
-#' # Process of re-estimating emissions
 
-# Subsetting FAOSTAT data to one domain
-fsdf<-
-  fs %>% 
-  filter(Year %in% Years, Domain == "GM") 
+gm <- 
+  outlook_emissions(fs, ol, DomainName = "GM")
 
-fsSubset <-
-  fsdf %>% 
-  map_fs_data #%>%
-  #filter(AreaCode == "OutlookSEAsia") 
+ge <- 
+  outlook_emissions(fs, ol, DomainName = "GE")
 
-# Subsetting and aggregating and reestinmating ewmissions for non adjusted 
-#   Outlook activity data
-outlookEmissions <-
-  ol %>%
-  subset_outlook(fsSubset, "no adj. Outlook") %>% 
-  reestimate_emissions(fsSubset) %>% 
-  estimate_missing_emissions(fsSubset)
+gu <- 
+  outlook_emissions(fs, ol, DomainName = "GU")
 
-# Subsetting and aggregating Outlook activity data for further calculating
-outlookAdjEmissions <-
-  ol %>%
-  subset_outlook(fsSubset) %>% 
-  adjust_outlook_activity(fsSubset) %>% 
-  reestimate_emissions(fsSubset) %>% 
-  estimate_missing_emissions(fsSubset)
+gp <- 
+  outlook_emissions(fs, ol, DomainName = "GP")
 
-QAdata <-
-  outlookEmissions  %>% 
-  bind_rows(outlookAdjEmissions) %>% 
-  bind_rows(fsSubset) %>% 
-  filter(AreaCode != "OutlookSEAsia") %>% 
-  bind_rows(
-    agg_ol_regions(., regionVar = "OutlookSEAsia") %>%
-      filter(!AreaCode %in% unique(subset_outlook(ol, fsSubset)[["AreaCode"]]))
-  ) 
+gr <- 
+  outlook_emissions(fs, ol, DomainName = "GR")
+
+gtpart <- 
+  bind_rows(list(gm, ge, gu, gp, gr)) %>% 
+  agg_ghg_domains %>% 
+  agg_total_emissions
+
+gt <- 
+  outlook_emissions(fs, 
+                    gtpart %>% filter(d.source == "Outlook"), 
+                    DomainName = "GT", useActivity = FALSE) %>% 
+  join_names()
 
 
-plot_group(QAdata %>% filter(AreaCode == "OutlookSEAsia"),
-           n_page = 5,
-           groups_var = c("ItemCode"),
-           plots_var = "ElementCode"
+gt %>% 
+  filter(AreaCode == "OutlookSEAsia", ElementCode == "Emissions_CO2Eq") %>% 
+  plot_group(n_page = 12,
+             groups_var = c("ElementCode"),
+             plots_var = "ItemCode"  )
+
+gtt %>% 
+  filter(AreaCode == "OutlookSEAsia", ElementCode == "Emissions_CO2Eq") %>% 
+  plot_group(n_page = 6,
+             groups_var = c("ElementCode"),
+             plots_var = "ItemCode"  )
+
+
+
+
+# QUALITY ASSURANCE
+plot_group(gm ,
+           n_page = 6,
+           groups_var = c("ElementCode"),
+           plots_var = "ItemCode"
 )
 
 

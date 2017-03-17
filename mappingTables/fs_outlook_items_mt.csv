@@ -16,3 +16,13 @@ ItemCode,ItemName,OutlookItemCode,ItemCodeAggSign,Exist
 1052,"Chickens, layers",PT,+,TRUE
 1068,Ducks,PT,+,TRUE
 1079,Turkeys,PT,+,TRUE
+5058,Enteric Fermentation,GE,+,TRUE
+5059,Manure Management,GM,+,TRUE
+5060,Rice Cultivation ,GR,+,TRUE
+5062,Manure applied to Soils,GU,+,TRUE
+5063,Manure left on Pasture,GP,+,TRUE
+5064,Crop Residues,GA,+,FALSE
+6759,Cultivation of Organic Soils,GV,+,FALSE
+5066,Burning - Crop residues,GB,+,FALSE
+5067,Burning - Savanna,GH,+,FALSE
+5061,Synthetic Fertilizers,GY,+,FALSE

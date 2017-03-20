@@ -1,0 +1,18 @@
+ItemCode,ItemName
+RI,Rice
+PK,Swine (incl. Breeding)
+SH,Sheep and Goat
+BV,"Cattle, non-dairy incl. Buffaloes"
+MK,"Cattle, dairy"
+EQ,"Asses, Camels, Horses, Llamas and Mules"
+PT,"Chickens broilers and layers, Ducks, Turkeys"
+GE,Enteric Fermentation
+GM,Manure Management
+GR,Rice Cultivation 
+GU,Manure applied to Soils
+GP,Manure left on Pasture
+GA,Crop Residues
+GV,Cultivation of Organic Soils
+GB,Burning - Crop residues
+GH,Burning - Savanna
+GY,Synthetic Fertilizers

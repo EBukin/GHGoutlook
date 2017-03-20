@@ -1,0 +1,8 @@
+ElementCode,ElementName,Unit
+AH,Area harvested,1000 ha
+EM_CH4,Emissions of CH4,Gigagram
+EM_CH4Eq,Emissions of CH4 in CO2  Equivalent,Gigagram
+EM_N2O,Emissions of N2O,Gigagram
+EM_N2OEq,Emissions of N2O in CO2  Equivalent,Gigagram
+Emissions_CO2Eq,Emissions of all GHG in CO2 Equivalent,Gigagram
+EM_CO2,Emissions or CO2,Gigagram

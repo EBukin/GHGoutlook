@@ -558,20 +558,28 @@ convert_ghg <-
              NewElementCode = c("EM_N2OEq", "EM_CH4Eq", "CO2"),
              ConversionFactor = c(310, 21, 1))
     
-    # If number for GHG in CO2 Equivalent were there, remove it. 
-    df <- 
-      df %>% 
-      filter(! ElementCode %in% convs$NewElementCode[1:2])
+    convs <- convs %>% filter(ElementCode %in% unique(df$ElementCode))
     
-    # Converting GHG
-    df %>% 
-      filter(ElementCode %in% c("EM_CH4", "EM_N2O", "CO2")) %>% 
-      left_join(convs, "ElementCode") %>% 
-      mutate(ElementCode = NewElementCode,
-             Value = Value * ConversionFactor) %>% 
-      select(-NewElementCode, - ConversionFactor)%>%
-      filter(!is.na(Value)) %>% 
-      bind_rows(df)
+    if(nrow(convs) > 0) {
+      # If number for GHG in CO2 Equivalent were there, remove it. 
+      df <- 
+        df %>% 
+        filter(! ElementCode %in% convs$NewElementCode[1:2])
+      
+          # Converting GHG
+      df <- 
+        df %>% 
+        filter(ElementCode %in% c("EM_CH4", "EM_N2O", "CO2")) %>% 
+        left_join(convs, "ElementCode") %>% 
+        mutate(ElementCode = NewElementCode,
+               Value = Value * ConversionFactor) %>% 
+        select(-NewElementCode, - ConversionFactor)%>%
+        filter(!is.na(Value)) %>% 
+        bind_rows(df)
+    }
+    
+    return(df)
+
   }
 
 
@@ -733,17 +741,10 @@ outlook_emissions <-
    
   }
 
-# Funciton for joining names
-join_names <- 
-  function(df, ItemNamesMT = "mappingTables/itemsNames.csv") {
-    mt <- read_csv(ItemNamesMT)
-    df %>% 
-      left_join(mt, "ItemCode")
-  }
 
 
 
-
+#' Reproducing those domains, which are reproducable based on activity data
 gm <- 
   outlook_emissions(fs, ol, DomainName = "GM")
 
@@ -759,41 +760,47 @@ gp <-
 gr <- 
   outlook_emissions(fs, ol, DomainName = "GR")
 
+# Reprosducing imputed numbers
 gtpart <- 
   bind_rows(list(gm, ge, gu, gp, gr)) %>% 
   agg_ghg_domains %>% 
   agg_total_emissions
 
-gt <- 
-  outlook_emissions(fs, 
-                    gtpart %>% filter(d.source == "Outlook"), 
-                    DomainName = "GT", useActivity = FALSE) %>% 
+gt <-
+  outlook_emissions(fs,
+                    gtpart %>% filter(d.source == "Outlook"),
+                    DomainName = "GT", useActivity = FALSE) %>%
+  filter(!ItemCode %in% c("GM", "GE", "GU", "GP", "GR")) %>% 
+  bind_rows(gtpart) %>% 
   join_names()
 
+# QA of some celeted numbers
 
+# gt %>%
+#   filter(AreaCode == "VNM") %>%
+#   plot_group(n_page = 12,
+#              groups_var = c("ElementCode"),
+#              plots_var = "ItemCode"  )
+# 
+# gtt %>% 
+#   filter(AreaCode == "OutlookSEAsia", ElementCode == "Emissions_CO2Eq") %>% 
+#   plot_group(n_page = 6,
+#              groups_var = c("ElementCode"),
+#              plots_var = "ItemCode"  )
+# # QUALITY ASSURANCE
+# plot_group(gm ,
+#            n_page = 6,
+#            groups_var = c("ElementCode"),
+#            plots_var = "ItemCode"
+# )
+
+# Exporting numbers
 gt %>% 
-  filter(AreaCode == "OutlookSEAsia", ElementCode == "Emissions_CO2Eq") %>% 
-  plot_group(n_page = 12,
-             groups_var = c("ElementCode"),
-             plots_var = "ItemCode"  )
-
-gtt %>% 
-  filter(AreaCode == "OutlookSEAsia", ElementCode == "Emissions_CO2Eq") %>% 
-  plot_group(n_page = 6,
-             groups_var = c("ElementCode"),
-             plots_var = "ItemCode"  )
-
-
-
-
-# QUALITY ASSURANCE
-plot_group(gm ,
-           n_page = 6,
-           groups_var = c("ElementCode"),
-           plots_var = "ItemCode"
-)
-
-
+  mutate(AreaCode2 = AreaCode) %>% 
+  filter(d.source == "Faostat" & Year <= 2014 |
+           d.source == "Outlook" & Year > 2014 ) %>% 
+  arrange(Domain, AreaCode, ItemCode, ElementCode, d.source, Year) %>% 
+write.csv(file = "output/preliminatyData.csv") 
 
 
 

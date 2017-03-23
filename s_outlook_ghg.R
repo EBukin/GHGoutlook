@@ -10,26 +10,37 @@
 
 #' *****
 #' # Process
-#' The purpose of this document is to reproduce GHG emissions data in FAOSTAT
-#'   using as the activity data the nyumbers of OECD-FAO Agricultural Outlook.
 #' 
-#' The process is consists of several steps:   
-#'  1. Mapping (aggregating) FAOSTAT areas, items and elements to the Outlook
-#'  2. Adjusting Outlook activities data to the FAOSTAT historical levels (if needed)  
-#'  3. QA of the activity data projections on the per country/area basis.  
-#'  4. Reestimating implied emissions factors based on aggregated areas and items in the FAOSTAT  
-#'  5. Extrapolating implied emissions factors for the projected years fllowing one of the predefined rules  
-#'  6. Reestimating projections of the GHG emission based in the 
-#'     Outlook activity data and new Implicit emissions factors  
+#' The purpose of this document is to explain the proces of reproducing the GHG
+#'   emissions data from the FAOSTAT using as the activity data the numbers 
+#'   of OECD-FAO Agricultural Outlook.
 #' 
+#' The process is structured around particular domains, data for which has to be reproduced. 
+#' 
+#' For the domains GE, GM, GU, GP and GR emissions are reproduced based on the 
+#' projected activity data, emissions related to other domains are treated separately 
+#' and data is reproduced based on various assumptions:
+#'  *   GB, GH and GA domains are projected as a constant share of total emissions
+#'      assuming the share based on the 5 years average share in the last know historical
+#'      period.  
+#'  *   GY domain emissions data are approximared based on the area and yields of 
+#'      crops relevant to the nitrogenous fertilizers consumption.  
+#'  *   GV domain data is kept at the constant level as it is assumed in the 
+#'      FAOSTAT. Alternatively, we test a situation, when emissions from the oranic 
+#'      soils are changing with the same rate as the area utilised under the 
+#'      palm oil produciton.  
+#'      
+#'  Below, we elaborate more explicitely on the methodology of the GHG estimation 
+#'      for different domains.  
+#'  
 #' # Setup
-
+#' 
 #' Installing packages
 #+results='hide', message = FALSE, warning = FALSE
-packs <- c("plyr", "tidyverse", "dplyr", "tidyr","readxl", "stringr", "DT", "rmarkdown",
-           "gridExtra", "grid", "ggplot2", "ggthemes", "scales", "devtools", "gridGraphics")
-lapply(packs[!packs %in% installed.packages()[,1]], 
-       install.packages,
+packs <- c("plyr", "tidyverse", "dplyr", "tidyr","readxl", "stringr", 
+           "DT", "rmarkdown", "gridExtra", "grid", "ggplot2", "ggthemes", 
+           "scales", "devtools", "gridGraphics")
+lapply(packs[!packs %in% installed.packages()[,1]], install.packages,
        dependencies = TRUE)
 lapply(packs, require, character.only = TRUE)
 
@@ -39,12 +50,12 @@ options(scipen=20)
 #' Loading locally developed functions
 l_ply(str_c("R/", list.files("R/", pattern="*.R")), source)
 
-
 #' # Loading data
-
-
+#' 
 #' ## Outlook data
+#' 
 #'  First we load all outlook data. If there is no data savein the Rdata file we reload all data from the CSV file.
+#'  
 olRDFile <- "data/outlook.Rdata"
 if(!file.exists(olRDFile)) {
   olFile <- "C:/Users/Bukin/OneDrive - Food and Agriculture Organization/outlookGHG/data/base17.csv"
@@ -57,9 +68,11 @@ if(!file.exists(olRDFile)) {
 }
 
 #' ## FAOSTAT data
+#' 
 #' Next step is loading all FAOSTAT data. Since FAOSTAT data combines data from 
 #'   multiple domains, we laod it all in on .Rdata file. In csae if there is no such file,
 #'   we reload all data from each domain specific file and save it in the R data file for further use.
+#'   
 fsRDFile <- "data/all_fs_emissions.Rdata"
 if(!file.exists(fsRDFile)) {
   files <- 
@@ -105,9 +118,12 @@ if(!file.exists(fsRDFile)) {
 }
 
 
+#' 
 #' ## Mapping tables
+#' 
 #' Besides data from Outlook and FAOSTAT, we also need specific mapping tables
 #'   which explain mappings from FAOSTAT to Outlook areas and items.
+#'   
 itemsMTFile <- "mappingTables/fs_outlook_items_mt.csv"
 itemsMT <- read_csv(itemsMTFile, 
                     col_types = cols(
@@ -116,7 +132,9 @@ itemsMT <- read_csv(itemsMTFile,
                       ItemCodeAggSign = col_character()
                       ))
 
+#' 
 #' Table `elementsMT` describes mapping and adjustment of elements from FAOSTAT to outlook.
+#' 
 elementsMTFile <- "mappingTables/fs_outlook_elements_mt.csv"
 elementsMT <- 
   read_csv(elementsMTFile, 
@@ -141,53 +159,125 @@ emissionsMT <-
              EFLag = col_integer(),
              GHG = col_character()
            ))
-#' # Implementing the process  
 #' 
-#' We perfrom all following calculations for one domain at the time. That allows 
+#' # Implementing the process
+#' 
+#' ## Reproducing GR, GE, GU, GP and GM
+#' 
+#' Domains discussed in this part are estimated based on the activity data,
+#'   projected in the OECD-FAO Agricultural Outlook. There domains are: 
+#'  
+#'  *  GR - Rice cultivation  
+#'  *  GE - Enteric fementation
+#'  *  GM - Manure Management
+#'  *  GU - Manure applied to soils
+#'  *  GP - Manure left of pastures
+#'   
+#'   The overall process consist of several important steps. All steps are 
+#'       organised in the body of a function `outlook_emissions`. This funciotn 
+#'       utilises faostat data, outlook data and previously loaded mapping tables
+#'       for reproducing emissions for the pre-defined domain. The steps of 
+#'       reproduction are the following:
+#'   
+#'   1.  Mapping FAOSTAT Areas to the outlook regions reestimating activity data 
+#'       and emissiosn respectively. Mapping the FAOSTAT activity data to the 
+#'       outlook activity data aggregating FAOSTAT items to the outlook items 
+#'       and reestimating emissions and activity data according to aggregatings. 
+#'       This is done with the `map_fs_data` function, which uses items and elements
+#'       mapping tabels and faostat filtered to one domain data. Thisng the function
+#'       uses `map_fs2ol` and `agg_ol_regions` which does the aggregation of the 
+#'       FAOSTAT data to the outlook structure. In the mapping process, some of the 
+#'       items and elements may be agregted by substracting one from another what 
+#'       is specified with the mapping tables.
+#'       
+#'   3.  Adjusting outlook activity data to the baseline level derived from the 
+#'       FAOSTAT historical data. This step is the part of the `outlook_emissions`
+#'       function, where mapped faostat data is ued for subset the outlook data 
+#'       to the items and elements relevant for one domain with the funciton 
+#'       `subset_outlook`. After subsetting, we apply function `adjust_outlook_activity`
+#'       in order to adjust ativity data from the outlook to the levels of the
+#'       FAOSTAT in the historical period.    
+#'    
+#'   4.  At the next srep we `reestimate_emissions` data based on the activity 
+#'       if such was prepared in the OUTLOOK data.  
+#'       
+#'   5.  In some cases, for some items and elements outlook does not have any 
+#'       activity data. In such cases, we estimate the emissions for the 
+#'       missing items and elements combinations based on the constant share of 
+#'       these items and elements in the knownd and estimated emissions. 
+#'       Constant share is assumed based on the 5 years average share calculated 
+#'       on the last available. THis step is made with the funcotin `estimate_missing_emissions`.  
+#'       
+#'   6.  At the next step we convert all GHG to the GHG expressed in the CO2
+#'       equivalent with the functoin `convert_ghg`.
+#'       
+#'   7.  After the numbers are reestimated in the steps 1-4, we aggregate regions
+#'       relevant to the outlook such as "Big five" region, Cosimo and Aglink 
+#'       regions and the World total. THe regional aggregating is made using the 
+#'       function `agg_ol_regions`.    
+#'       
+#'       
+#' We perfrom all abovexplained calculations for one domain at the time. That allows 
 #'    us to apply the same functions and approaches to every domain maintaining 
 #'    methodological consistency.
 #'    
-#' The process is organized in the followin way:
-#'     
-#'  1. Mapping (aggregating) FAOSTAT areas, items and elements to the Outlook using 
-#'  function `map_fs_data` on the FAOSTAT data filtered for one domain;    
-#'  
-#'  2. Subsetting outlook activity data to the items and elements relevant to one 
-#'  domain using the function `subset_outlook` and adjusting historical outlook data 
-#'  to the levels of historical data in the FAOSTAT using function `adjust_outlook_activity`;    
-#'    
-#'  3. Recalculating implied emissions factors for reaggregated areas, item and 
-#'  element of the FAOSTAT data and re-calculate emissing using implied emissions 
-#'  factors calculated at the previous step and adjusted outlook activities data
-#'  using function `reestimate_emissions`.   
-#'  
-#' All abovementioned functoin are described below.
+#' Reproducing data.
+gm <- outlook_emissions(fs, ol, DomainName = "GM")
+ge <- outlook_emissions(fs, ol, DomainName = "GE")
+gu <- outlook_emissions(fs, ol, DomainName = "GU")
+gp <- outlook_emissions(fs, ol, DomainName = "GP")
+gr <- outlook_emissions(fs, ol, DomainName = "GR")
+
+#' ## Reproducing GI, GC, GG and GF domains
 #' 
-#' # Process of re-estimating emissions
+#' When reproducing data for the GI - Burning Biomass, GC - Cropland and GG - Grassland
+#'   domains we assume that the values of emissions remains constant at the levels
+#'   of the last 5 years average. Blow we reproduce that.
+# Number of years lag for average projections
+nYears <- max(5 - 1, 0)
+lastYear = 2030
+# Reproducing emissions for the GI, GC, GG
+ol_lu <-
+  fs %>%
+  filter(Year %in% c(2000:2016), Domain == "GL") %>%
+  map_fs_data(., fsYears = c(2000:2016)) %>%
+  filter(AreaCode %in% get_ol_countries()) %>% 
+  filter(Year %in% (max(Year) - nYears + 1):max(Year)) %>%
+  mutate(Year = max(Year)) %>% 
+  group_by_(.dots = names(.)[!names(.) %in% c("Value")]) %>% 
+  summarise(Value = mean(Value)) %>% 
+  ungroup()
+# Expanding projected emissions for the projected period
+ol_lu <-
+  ldply((max(ol_lu$Year) + 1):lastYear, function(x) {
+    ol_lu %>%
+      mutate(Year = x)
+  }) %>%
+  tbl_df() %>%
+  mutate(d.source = "Outlook") %>%
+  arrange(Domain, AreaCode, ItemCode, ElementCode, Year)
+
+# 
+
+
+
+
+
+
+#'  *  GF - Forestland
+
 #' 
-#' Bcause the outlook activity data is limited compare to the FAOSTAT we can 
-#'     customise the process of reestimating GHG emissions data only for a subset
-#'     of domains. For other domains, the proces will have to remain manual. 
-#'     
-
-
-#' Reproducing those domains, which are reproducable based on activity data
-gm <- 
-  outlook_emissions(fs, ol, DomainName = "GM")
-
-ge <- 
-  outlook_emissions(fs, ol, DomainName = "GE")
-
-gu <- 
-  outlook_emissions(fs, ol, DomainName = "GU")
-
-gp <- 
-  outlook_emissions(fs, ol, DomainName = "GP")
-
-gr <- 
-  outlook_emissions(fs, ol, DomainName = "GR")
-
-# Reprosducing imputed numbers
+#' ## Reproducing GB, GH and GA
+#' 
+#' Reproducing emissions for the domains Burning crop residues, Burning Savana 
+#'   and crop residues. To reproduce emissions for these domains such we use 
+#'   the constant share of the enissions from this dimains in the estimatable 
+#'   emissions from agriculture and continue this trend to future. 
+#'   
+#' Projecting of these domains is made based on the total aggregates of all 
+#'   estimated domains and Agriculture total domain.
+#'   
+#'      
 gtpart <- 
   bind_rows(list(gm, ge, gu, gp, gr)) %>% 
   agg_ghg_domains %>% 
@@ -203,12 +293,12 @@ gt <-
 
 # QA of some celeted numbers
 
-# gt %>%
-#   filter(AreaCode == "VNM") %>%
-#   plot_group(n_page = 12,
-#              groups_var = c("ElementCode"),
-#              plots_var = "ItemCode"  )
-# 
+gt %>%
+  filter(AreaCode == "VNM") %>%
+  plot_group(n_page = 12,
+             groups_var = c("ElementCode"),
+             plots_var = "ItemCode"  )
+
 # gtt %>% 
 #   filter(AreaCode == "OutlookSEAsia", ElementCode == "Emissions_CO2Eq") %>% 
 #   plot_group(n_page = 6,

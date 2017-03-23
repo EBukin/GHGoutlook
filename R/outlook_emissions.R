@@ -3,7 +3,7 @@
 #'     is aggregated to the regions.'     
 #'     
 outlook_emissions <-
-  function(fs, ol, DomainName, fsYears = c(2000:2020), useActivity = TRUE) {
+  function(fs, ol, DomainName, fsYear = c(2000:2020), useActivity = TRUE, nLags = 5) {
     
     # Countries list
     countries <-
@@ -17,14 +17,14 @@ outlook_emissions <-
         "THA", "TUN", "TUR", "TZA", "UGA", "UKR", "URY", "USA", "VNM", #"WLD",
         "YEM", "ZAF", "ZMB", "ZWE")
     
-    # We are only concearned about subset of countr
+    # We are only concearned about subset of countries
     fsSubset<-
       fs %>% 
-      filter(Year %in% fsYears, Domain == DomainName) %>% 
-      map_fs_data %>% 
+      filter(Year %in% fsYear, Domain == DomainName) %>% 
+      map_fs_data(., fsYears = fsYear) %>% 
       filter(AreaCode %in% countries)
     
-    # Subsetting and aggregating and reestinmating emissions for non adjusted
+    # Subsetting and aggregating and reestimating emissions for non adjusted
     #     Outlook activity data
     outlookEmissions <-
       ol %>%
@@ -56,14 +56,14 @@ outlook_emissions <-
         outlookAdjEmissions  %>%
         adjust_outlook_activity(fsSubset) %>% 
         reestimate_emissions(fsSubset) %>%
-        estimate_missing_emissions(fsSubset) %>%
+        estimate_missing_emissions(fsSubset, nLag = nLags) %>%
         convert_ghg() %>%
         distinct()
     } else {
       outlookAdjEmissions <-
         outlookAdjEmissions  %>%
         adjust_outlook_activity(fsSubset) %>% 
-        estimate_missing_emissions(fsSubset) %>%
+        estimate_missing_emissions(fsSubset, nLag = nLags) %>%
         convert_ghg() %>%
         distinct()
     }

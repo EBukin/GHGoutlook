@@ -67,8 +67,9 @@ map_fs_data <-
       summarise(Value = sum(Value, na.rm = TRUE)) %>%
       ungroup() 
     
-    # Mapping and aggregating elements
-    # There are specific items and generic items to map
+    # In each domain there are some elements which are generic for multiple items 
+    #   as well as there are elements unique for patricular item combinations.
+    #   Here we destinct between those and mapp elements separately. 
     if(nrow(elementMTSpecific) > 0) {
       fsolSpecific <-
         fsol %>%
@@ -82,6 +83,7 @@ map_fs_data <-
         mutate(d.source = "Faostat")
     } else {fsolSpecific <- NULL}
     
+    # Mapping generi elements.
     if(nrow(elementMTGeneric) > 0) {
       fsolGeneric <-
         fsol %>%

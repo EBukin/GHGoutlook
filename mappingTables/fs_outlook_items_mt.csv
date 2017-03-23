@@ -26,3 +26,8 @@ ItemCode,ItemName,OutlookItemCode,ItemCodeAggSign,Exist
 5066,Burning - Crop residues,GB,+,FALSE
 5067,Burning - Savanna,GH,+,FALSE
 5061,Synthetic Fertilizers,GY,+,FALSE
+6798,Burning - all categories,BA,+,TRUE
+5070,Cropland,GC,+,TRUE
+6794,Grassland,GG,+,TRUE
+5069,Burning Biomass,GI,+,TRUE
+5065,Forest land,GF,+,TRUE

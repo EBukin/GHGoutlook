@@ -20,3 +20,5 @@ GC,Cropland
 GG,Grassland
 GI,Burning Biomass
 GF,Forest land
+FO,Forest
+FC,Net Forest conversion

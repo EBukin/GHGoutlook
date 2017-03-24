@@ -31,3 +31,5 @@ ItemCode,ItemName,OutlookItemCode,ItemCodeAggSign,Exist
 6794,Grassland,GG,+,TRUE
 5069,Burning Biomass,GI,+,TRUE
 5065,Forest land,GF,+,TRUE
+6661,Forest,FO,+,TRUE
+6750,Net Forest conversion,FC,+,TRUE

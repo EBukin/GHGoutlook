@@ -130,7 +130,7 @@ itemsMT <- read_csv(itemsMTFile,
                       ItemCode = col_integer(),
                       OutlookItemCode = col_character(),
                       ItemCodeAggSign = col_character()
-                      ))
+                    ))
 
 #' 
 #' Table `elementsMT` describes mapping and adjustment of elements from FAOSTAT to outlook.
@@ -366,14 +366,95 @@ lu <-
   agg_all_ol_regions() %>% 
   join_names()
 
-#' # Combining and exporting emissions data
+#' # Combining and exporting all emissions not adjusted data
 seaData <- 
   bind_rows(lu, gt) %>% 
   filter(d.source == "Outlook") %>% 
-  filter(AreaCode %in% c("WLD", "RestOfTheWorld", "OutlookSEAsia", "KHM", "IDN", "LAO", "MYS", "MMR", "PHL", "THA", "VNM"))
+  filter(AreaCode %in% c("WLD", "RestOfTheWorld", "OutlookSEAsia", "KHM", 
+                         "IDN", "LAO", "MYS", "MMR", "PHL", "THA", "VNM"))
 
-write_csv(seaData, "output/SEA_data_prelim.csv")  
-  
+
+#' ## Adjusting organic soils and cropland 
+#' 
+#' This adjustment is made manually in the file, which we furtherly loaded to
+#'    the main data.
+#'  
+#' Export relevant data for adjustment into a file
+seaData %>%
+  filter(AreaCode %in% c("MYS", "IDN"),
+         ItemCode %in% c("GV", "GC")) %>%
+  bind_rows(ol %>% filter(AreaCode %in% c("MYS", "IDN"), ItemCode == "PL", ElementCode == "AH")) %>%
+  spread(Year, Value) %>%
+  write_csv("adjustmetns/baseOrganicSoilsCroplandAdjustmens.csv")
+
+#' Loading manually adjusted organic soils and cropland data
+seaAdjData_part1 <-
+  seaData %>%
+  filter(! (AreaCode %in% c("MYS", "IDN") & ItemCode %in% c("GV", "GC"))) %>% 
+  bind_rows(read_csv("adjustmetns/AdjustedOrganicSoilsCroplandAdjustmens.csv") %>% 
+              gather(Year, Value, 9:length(.)) %>% 
+              mutate(Year = as.integer(Year),
+                     Value = as.numeric(Value))) %>% 
+  filter(AreaCode != "OutlookSEAsia") %>% 
+  bind_rows(agg_all_ol_regions(.) %>% 
+              filter(AreaCode == "OutlookSEAsia")) %>% 
+  mutate(d.source = "Outlook organic soils and cropland")
+
+#' ## Adjusting organic soils, cropland and forestland
+#' 
+#' To adjust forest land data we need to manipulate data from the forest land domain directly.
+#' 
+# Exporting forest data for manual fixup
+fs %>%
+  filter(Year %in% c(2000:2016), Domain == "GF") %>%
+  map_fs_data(., fsYears = c(2000:2016)) %>%
+  filter((AreaCode %in% c("MYS", "IDN") & ItemCode %in% c("FO", "FC")))  %>%
+  bind_rows(ol %>% filter(AreaCode %in% c("MYS", "IDN"), ItemCode == "PL", ElementCode == "AH")) %>%
+  bind_rows(seaData %>%
+              filter(AreaCode %in% c("MYS", "IDN"),
+                     ItemCode %in% c("GF"))) %>% 
+  spread(Year, Value) %>%
+  arrange(AreaCode, ElementCode, ItemCode) %>% 
+  write_csv("adjustmetns/baseForestdjustmens.csv")
+
+#' Loading manually adjusted organic soils and cropland data and forest land data
+seaAdjData_part2 <-
+  seaData %>%
+  filter(! (AreaCode %in% c("MYS", "IDN") & ItemCode %in% c("GV", "GC", "GF"))) %>% 
+  bind_rows(read_csv("adjustmetns/AdjustedOrganicSoilsCroplandAdjustmens.csv") %>% 
+              gather(Year, Value, 9:length(.)) %>% 
+              mutate(Year = as.integer(Year),
+                     Value = as.numeric(Value))) %>% 
+  bind_rows(read_csv("adjustmetns/AdjustedForest.csv") %>% 
+              gather(Year, Value, 9:length(.)) %>% 
+              mutate(Year = as.integer(Year),
+                     Value = as.numeric(Value))) %>% 
+  filter(AreaCode != "OutlookSEAsia") %>% 
+  bind_rows(agg_all_ol_regions(.) %>% 
+              filter(AreaCode == "OutlookSEAsia")) %>% 
+  mutate(d.source = "Outlook organic cropland forest")
+
+
+#' Exporting data for SEA total only
+bind_rows(seaData, seaAdjData_part1, seaAdjData_part2) %>% 
+  filter(Year >= 2000) %>% 
+  mutate(Year = as.character(Year)) %>% 
+  mutate(Year = ifelse(Year %in% as.character(c(2000:2010)), "2000-2010", Year)) %>% 
+  group_by_(.dots = names(.)[!names(.) %in% c("Value")]) %>% 
+  summarise(Value = mean(Value)) %>% 
+  filter(AreaCode  == "OutlookSEAsia", ElementCode == "Emissions_CO2Eq", Year %in% c("2000-2010", "2016", "2026")) %>% 
+  spread(Year, Value) %>% 
+  arrange(d.source, (`2026`)) %>%  
+  select(Domain, AreaCode,	ItemCode,	ElementCode,	ElementName, Unit, d.source,	ItemName, everything()) %>% 
+  write_csv("output/SEA_total_prelim_adjusted.csv")
+
+
+
+# 
+# write_csv(seaData, "output/SEA_data_prelim.csv")
+# 
+# write_csv(, "output/SEA_Adjusted_data_prelim.csv")  
+
 
 # QA of some celeted numbers
 

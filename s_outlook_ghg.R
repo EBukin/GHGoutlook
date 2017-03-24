@@ -227,46 +227,42 @@ ge <- outlook_emissions(fs, ol, DomainName = "GE")
 gu <- outlook_emissions(fs, ol, DomainName = "GU")
 gp <- outlook_emissions(fs, ol, DomainName = "GP")
 gr <- outlook_emissions(fs, ol, DomainName = "GR")
-
-#' ## Reproducing GI, GC, GG and GF domains
 #' 
-#' When reproducing data for the GI - Burning Biomass, GC - Cropland and GG - Grassland
-#'   domains we assume that the values of emissions remains constant at the levels
-#'   of the last 5 years average. Blow we reproduce that.
-# Number of years lag for average projections
-nYears <- max(5 - 1, 0)
-lastYear = 2030
-# Reproducing emissions for the GI, GC, GG
-ol_lu <-
+#' ## Reproducing GV
+#' 
+#' For the GV - Cultivating Orghanic Soils domain we repeat the last know values.
+gv_fs <-
   fs %>%
-  filter(Year %in% c(2000:2016), Domain == "GL") %>%
-  map_fs_data(., fsYears = c(2000:2016)) %>%
-  filter(AreaCode %in% get_ol_countries()) %>% 
-  filter(Year %in% (max(Year) - nYears + 1):max(Year)) %>%
+  filter(Year %in% c(2000:2016), Domain == "GT") %>%
+  map_fs_data(., fsYears = c(2000:2016)) %>% 
+  filter(ItemCode == "GV") %>%
+  filter(AreaCode %in% get_ol_countries()) 
+gv <- 
+  gv_fs %>% 
+  filter(Year %in% (max(Year))) %>%
   mutate(Year = max(Year)) %>% 
   group_by_(.dots = names(.)[!names(.) %in% c("Value")]) %>% 
   summarise(Value = mean(Value)) %>% 
   ungroup()
 # Expanding projected emissions for the projected period
-ol_lu <-
-  ldply((max(ol_lu$Year) + 1):lastYear, function(x) {
-    ol_lu %>%
+gv <-
+  ldply((max(gv$Year) + 1):lastYear, function(x) {
+    gv %>%
       mutate(Year = x)
   }) %>%
   tbl_df() %>%
-  mutate(d.source = "Outlook") %>%
-  arrange(Domain, AreaCode, ItemCode, ElementCode, Year)
+  bind_rows(gv_fs) %>% 
+  mutate(d.source = "Outlook") 
 
-# 
+gv <- 
+  gv %>% 
+  bind_rows(gv_fs) %>% 
+  bind_rows(gv %>% filter(d.source ==  "Outlook") %>% mutate(d.source = "no adj. Outlook") )%>%
+  arrange(Domain, AreaCode, ItemCode, ElementCode, Year) %>% 
+  agg_all_ol_regions()
 
 
 
-
-
-
-#'  *  GF - Forestland
-
-#' 
 #' ## Reproducing GB, GH and GA
 #' 
 #' Reproducing emissions for the domains Burning crop residues, Burning Savana 
@@ -287,9 +283,97 @@ gt <-
   outlook_emissions(fs,
                     gtpart %>% filter(d.source == "Outlook"),
                     DomainName = "GT", useActivity = FALSE) %>%
-  filter(!ItemCode %in% c("GM", "GE", "GU", "GP", "GR")) %>% 
-  bind_rows(gtpart) %>% 
+  filter(!ItemCode %in% c("GM", "GE", "GU", "GP", "GR", "GV")) %>% 
+  bind_rows(gtpart, gv) %>% 
   join_names()
+
+
+#' ## Reproducing GI, GC, GG and GF domains
+#' 
+#' When reproducing data for the GI - Burning Biomass, GC - Cropland and GG - Grassland
+#'   domains we assume that the values of emissions remains constant at the levels
+#'   of the last 5 years average. Blow we reproduce that.
+# Number of years lag for average projections
+nYears <- max(5 - 1, 0)
+lastYear = 2030
+# Reproducing emissions for the GI, GC, GG
+ol_lu_fs <-
+  fs %>%
+  filter(Year %in% c(2000:2016), Domain == "GL") %>%
+  map_fs_data(., fsYears = c(2000:2016)) %>%
+  filter(AreaCode %in% get_ol_countries()) 
+ol_lu <-
+  ol_lu_fs %>% 
+  filter(Year %in% (max(Year) - nYears + 1):max(Year)) %>%
+  mutate(Year = max(Year)) %>% 
+  group_by_(.dots = names(.)[!names(.) %in% c("Value")]) %>% 
+  summarise(Value = mean(Value)) %>% 
+  ungroup()
+# Expanding projected emissions for the projected period
+ol_lu <-
+  ldply((max(ol_lu$Year) + 1):lastYear, function(x) {
+    ol_lu %>%
+      mutate(Year = x)
+  }) %>%
+  tbl_df() %>%
+  bind_rows(ol_lu_fs) %>% 
+  mutate(d.source = "Outlook") %>%
+  arrange(Domain, AreaCode, ItemCode, ElementCode, Year) %>% 
+  filter(ItemCode != "GF")
+ol_lu <- 
+  ol_lu %>% 
+  mutate(d.source = "no adj. Outlook") %>% 
+  bind_rows(ol_lu)%>%
+  bind_rows(ol_lu_fs) 
+
+
+#'  For the domain GF - Forestland we continue the last know value to the future.
+# Reproducing emissions for the GF
+gf_sf <-
+  fs %>%
+  filter(Year %in% c(2000:2016), Domain == "GL") %>%
+  map_fs_data(., fsYears = c(2000:2016)) %>% 
+  filter(ItemCode == "GF")
+
+gf <-
+  gf_sf %>% 
+  filter(AreaCode %in% get_ol_countries()) %>% 
+  filter(Year %in% (max(Year))) %>%
+  mutate(Year = max(Year)) %>% 
+  group_by_(.dots = names(.)[!names(.) %in% c("Value")]) %>% 
+  summarise(Value = mean(Value)) %>% 
+  ungroup()
+# Expanding projected emissions for the projected period
+gf <-
+  ldply((max(gf$Year) + 1):lastYear, function(x) {
+    gf %>%
+      mutate(Year = x)
+  }) %>%
+  tbl_df() %>%
+  bind_rows(gf_sf) %>% 
+  mutate(d.source = "Outlook") %>%
+  arrange(Domain, AreaCode, ItemCode, ElementCode, Year)
+gf <- 
+  gf %>% 
+  mutate(d.source = "no adj. Outlook") %>% 
+  bind_rows(gf) %>%
+  bind_rows(gf_sf) 
+
+
+#' Combining Landuse total emissions
+lu <- 
+  bind_rows(gf, ol_lu)  %>% 
+  agg_all_ol_regions() %>% 
+  join_names()
+
+#' # Combining and exporting emissions data
+seaData <- 
+  bind_rows(lu, gt) %>% 
+  filter(d.source == "Outlook") %>% 
+  filter(AreaCode %in% c("WLD", "RestOfTheWorld", "OutlookSEAsia", "KHM", "IDN", "LAO", "MYS", "MMR", "PHL", "THA", "VNM"))
+
+write_csv(seaData, "output/SEA_data_prelim.csv")  
+  
 
 # QA of some celeted numbers
 

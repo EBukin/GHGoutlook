@@ -72,37 +72,40 @@ outlook_emissions <-
     bindedData <- 
       bind_rows(outlookEmissions, outlookAdjEmissions, fsSubset)
     
-    # Aggregating big five
-    bindedData <-
-      bindedData %>%
-      bind_rows(
-        agg_ol_regions(., regionVar = "OutlookBigRegion") %>%
-          filter(!AreaCode %in% unique(bindedData[["AreaCode"]]))
-      )
+    bindedData <- 
+      agg_all_ol_regions(bindedData)
     
-    # Aggregating Cosimo Outlook
-    bindedData <-
-      bindedData %>%
-      bind_rows(
-        agg_ol_regions(., regionVar = "OutlookSuperRegion") %>%
-          filter(!AreaCode %in% unique(bindedData[["AreaCode"]]))
-      )
-    
-    # Aggregating SEA
-    bindedData <-
-      bindedData %>%
-      bind_rows(
-        agg_ol_regions(., regionVar = "OutlookSEAsia") %>%
-          filter(!AreaCode %in% unique(bindedData[["AreaCode"]]))
-      )
-    
-    # Aggregating WLD
-    bindedData <-
-      bindedData %>%
-      bind_rows(
-        agg_ol_regions(., regionVar = "Global") %>%
-          filter(!AreaCode %in% unique(bindedData[["AreaCode"]]))
-      )
+    # # Aggregating big five
+    # bindedData <-
+    #   bindedData %>%
+    #   bind_rows(
+    #     agg_ol_regions(., regionVar = "OutlookBigRegion") %>%
+    #       filter(!AreaCode %in% unique(bindedData[["AreaCode"]]))
+    #   )
+    # 
+    # # Aggregating Cosimo Outlook
+    # bindedData <-
+    #   bindedData %>%
+    #   bind_rows(
+    #     agg_ol_regions(., regionVar = "OutlookSuperRegion") %>%
+    #       filter(!AreaCode %in% unique(bindedData[["AreaCode"]]))
+    #   )
+    # 
+    # # Aggregating SEA
+    # bindedData <-
+    #   bindedData %>%
+    #   bind_rows(
+    #     agg_ol_regions(., regionVar = "OutlookSEAsia") %>%
+    #       filter(!AreaCode %in% unique(bindedData[["AreaCode"]]))
+    #   )
+    # 
+    # # Aggregating WLD
+    # bindedData <-
+    #   bindedData %>%
+    #   bind_rows(
+    #     agg_ol_regions(., regionVar = "Global") %>%
+    #       filter(!AreaCode %in% unique(bindedData[["AreaCode"]]))
+    #   )
     
     
     # Returning all data

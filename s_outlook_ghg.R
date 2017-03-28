@@ -246,7 +246,7 @@ gv <-
   ungroup()
 # Expanding projected emissions for the projected period
 gv <-
-  ldply((max(gv$Year) + 1):lastYear, function(x) {
+  ldply((max(gv$Year) + 1):2030, function(x) {
     gv %>%
       mutate(Year = x)
   }) %>%
@@ -257,7 +257,7 @@ gv <-
 gv <- 
   gv %>% 
   bind_rows(gv_fs) %>% 
-  bind_rows(gv %>% filter(d.source ==  "Outlook") %>% mutate(d.source = "no adj. Outlook") )%>%
+  bind_rows(gv %>% filter(d.source ==  "Outlook") %>% mutate(d.source = "no adj. Outlook"))%>%
   arrange(Domain, AreaCode, ItemCode, ElementCode, Year) %>% 
   agg_all_ol_regions()
 
@@ -384,6 +384,7 @@ seaData %>%
   filter(AreaCode %in% c("MYS", "IDN"),
          ItemCode %in% c("GV", "GC")) %>%
   bind_rows(ol %>% filter(AreaCode %in% c("MYS", "IDN"), ItemCode == "PL", ElementCode == "AH")) %>%
+  # slice(c(125, 126))
   spread(Year, Value) %>%
   write_csv("adjustmetns/baseOrganicSoilsCroplandAdjustmens.csv")
 
@@ -434,18 +435,87 @@ seaAdjData_part2 <-
               filter(AreaCode == "OutlookSEAsia")) %>% 
   mutate(d.source = "Outlook organic cropland forest")
 
+#' Preparing forest data as a reference
+gf_Extra <- 
+  fs %>%
+  filter(Year %in% c(2000:2016), Domain == "GF") %>%
+  map_fs_data(., fsYears = c(2000:2016)) %>%
+  filter((ItemCode %in% c("FO", "FC")))  %>%
+  agg_ol_regions(., regionVar = "OutlookSEAsia") %>%
+  filter(AreaCode == "OutlookSEAsia") %>% 
+  bind_rows(ol %>%
+              agg_ol_regions(., regionVar = "OutlookSEAsia") %>%
+              filter(AreaCode == "OutlookSEAsia", 
+                     ItemCode == "PL", ElementCode == "AH")) %>%
+  # bind_rows(seaData %>%
+  #             filter(AreaCode %in% c("OutlookSEAsia"),
+  #                    ItemCode %in% c("GF"))) %>%
+  # select(Domain,      AreaCode, ItemCode,     ElementCode, d.source, Year, Value) %>% 
+  # join_names() %>%
+  # spread(Year, Value) %>% 
+  filter(ElementCode == "Emissions_CO2Eq") %>% 
+  arrange( AreaCode, ItemCode ) %>% 
+  mutate(d.source = "Outlook")
+
+gf_Extra <- 
+  gf_Extra %>% 
+  bind_rows(gf_Extra %>% 
+              mutate(d.source = "Outlook organic soils and cropland"))
+
+gf_Extra <-
+  ldply(c(2000:2030), 
+      function(x) {
+        gf_Extra %>% 
+          select(Domain, AreaCode, ItemCode, ElementCode, d.source) %>% 
+          distinct() %>% 
+          mutate(Year = x)}) %>% 
+  tbl_df %>% 
+  left_join(gf_Extra, by = c("Domain", "AreaCode", "ItemCode", "ElementCode", "d.source", "Year")) %>% 
+    group_by(Domain,  AreaCode, ItemCode, ElementCode, d.source) %>% 
+    arrange(Year) %>% 
+    fill(Value) %>% 
+  ungroup() %>% 
+    join_names()
+
 
 #' Exporting data for SEA total only
-bind_rows(seaData, seaAdjData_part1, seaAdjData_part2) %>% 
-  filter(Year >= 2000) %>% 
-  mutate(Year = as.character(Year)) %>% 
-  mutate(Year = ifelse(Year %in% as.character(c(2000:2010)), "2000-2010", Year)) %>% 
+export <- 
+  bind_rows(seaData, seaAdjData_part1, gf_Extra) %>% 
+  filter(Year >= 2000 & Year < 2027) %>% 
+  mutate(Year = as.character(Year)) 
+
+export <-
+  export %>% 
+  mutate(Year = ifelse(Year %in% as.character(c(2001:2010)), "2001-2010", Year),
+         Year = ifelse(Year %in% as.character(c(2014:2016)), "2014-2016", Year)) %>% 
   group_by_(.dots = names(.)[!names(.) %in% c("Value")]) %>% 
   summarise(Value = mean(Value)) %>% 
-  filter(AreaCode  == "OutlookSEAsia", ElementCode == "Emissions_CO2Eq", Year %in% c("2000-2010", "2016", "2026")) %>% 
-  spread(Year, Value) %>% 
-  arrange(d.source, (`2026`)) %>%  
-  select(Domain, AreaCode,	ItemCode,	ElementCode,	ElementName, Unit, d.source,	ItemName, everything()) %>% 
+    filter(Year %in% c("2001-2010", "2014-2016")) %>% 
+    bind_rows(export) %>% 
+    # filter(Year %in% c("2001-2010", "2014-2016", "2026")) %>% 
+  filter(AreaCode  == "OutlookSEAsia", ElementCode == "Emissions_CO2Eq") %>% 
+  ungroup()
+
+BurningSavanna <- 
+  filter(export, Year == "2014-2016", ItemCode == "GH") %>% 
+  rename(Savanna = Value) %>% 
+  select(AreaCode, ItemCode, ElementCode, d.source, Savanna )
+BurningBiomass <- filter(export, Year == "2014-2016", ItemCode == "GI") %>% 
+  rename(Biomass = Value) %>% 
+  select(AreaCode, ItemCode, ElementCode, d.source, Biomass )
+
+# Writing all
+export %>% 
+  left_join(BurningSavanna , by = c("AreaCode", "ItemCode", "ElementCode", "d.source")) %>%
+  left_join(BurningBiomass , by = c("AreaCode", "ItemCode", "ElementCode", "d.source")) %>%
+  mutate(Value = ifelse(ItemCode == "GH", Savanna, Value ),
+         Value = ifelse(ItemCode == "GI", Biomass, Value )) %>%
+  select(-Biomass, -Savanna) %>%
+  # slice(c(3, 71))
+  spread(Year, Value) %>%
+  arrange(d.source, (`2026`)) %>% 
+  select(-ItemCode, -ElementCode, -Unit) %>% 
+  select(AreaCode, ElementName, Domain,	ItemName,	d.source, `2001-2010`, `2014-2016`, `2016`, `2026`, everything()) %>% 
   write_csv("output/SEA_total_prelim_adjusted.csv")
 
 

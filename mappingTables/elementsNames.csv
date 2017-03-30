@@ -6,3 +6,6 @@ EM_N2O,Emissions of N2O,Gigagram
 EM_N2OEq,Emissions of N2O in CO2  Equivalent,Gigagram
 Emissions_CO2Eq,Emissions of all GHG in CO2 Equivalent,Gigagram
 EM_CO2,Emissions or CO2,Gigagram
+Area,Area,1000 ha
+CI,Live animals,Heads
+LI,Live animals,Heads

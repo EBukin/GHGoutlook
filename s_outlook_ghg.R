@@ -58,7 +58,8 @@ l_ply(str_c("R/", list.files("R/", pattern="*.R")), source)
 #'  
 olRDFile <- "data/outlook.Rdata"
 if(!file.exists(olRDFile)) {
-  olFile <- "C:/Users/Bukin/OneDrive - Food and Agriculture Organization/outlookGHG/data/base17.csv"
+  #olFile <- "C:/Users/Bukin/OneDrive - Food and Agriculture Organization/outlookGHG/data/base17.csv"
+  olFile <- "C:/2017/Master/BaselineOutput.csv"
   if(!file.exists(olFile)) olFile <- "data/base17.csv"
   ol <- load_troll_csv(olFile, d.source = "") %>% 
     select(AreaCode, ItemCode, ElementCode, Year, Value)
@@ -373,7 +374,7 @@ seaData <-
                          "IDN", "LAO", "MYS", "MMR", "PHL", "THA", "VNM"))
 
 
-#' ## Adjusting organic soils and cropland 
+#' ## Adjusting organic soils and cropland --------------------------------------
 #' 
 #' This adjustment is made manually in the file, which we furtherly loaded to
 #'    the main data.
@@ -564,7 +565,7 @@ export %>%
   select(-ItemCode, -ElementCode, -Unit) %>%
   arrange(d.source) %>% 
   select(AreaCode, ElementName, Domain,	ItemName,	d.source, `2016`, `2026`, everything()) %>%
-  write_csv("output/SEA_total_prelim_adjusted.csv")
+  write_csv(str_c("output/SEA_total_prelim_adjusted_Base_2", Sys.Date(),".csv"))
 
 
 #' Exporting data for SEA All countries not totals
@@ -619,7 +620,7 @@ export2 %>%
   select(-ItemCode, -ElementCode, -Unit) %>%
   arrange(AreaCode, d.source) %>% 
   select(AreaCode, ElementName, Domain,	ItemName,	d.source, `2016`, `2026`, everything()) %>%
-  write_csv("output/SEA_total_prelim_adjusted_countries.csv")
+  write_csv(str_c("output/SEA_total_prelim_adjusted_countries_Base_2_", Sys.Date(),".csv"))
 
 
 
@@ -629,13 +630,13 @@ export2 %>%
 # write_csv(, "output/SEA_Adjusted_data_prelim.csv")  
 
 
-# QA of some celeted numbers
+# QA of some selceted numbers
 
-gt %>%
-  filter(AreaCode == "VNM") %>%
-  plot_group(n_page = 12,
-             groups_var = c("ElementCode"),
-             plots_var = "ItemCode"  )
+# gt %>%
+#   filter(AreaCode == "VNM") %>%
+#   plot_group(n_page = 12,
+#              groups_var = c("ElementCode"),
+#              plots_var = "ItemCode"  )
 
 # gtt %>% 
 #   filter(AreaCode == "OutlookSEAsia", ElementCode == "Emissions_CO2Eq") %>% 
@@ -650,12 +651,12 @@ gt %>%
 # )
 
 # Exporting numbers
-gt %>% 
-  mutate(AreaCode2 = AreaCode) %>% 
-  filter(d.source == "Faostat" & Year <= 2014 |
-           d.source == "Outlook" & Year > 2014 ) %>% 
-  arrange(Domain, AreaCode, ItemCode, ElementCode, d.source, Year) %>% 
-write.csv(file = "output/preliminatyData.csv") 
+# gt %>% 
+#   mutate(AreaCode2 = AreaCode) %>% 
+#   filter(d.source == "Faostat" & Year <= 2014 |
+#            d.source == "Outlook" & Year > 2014 ) %>% 
+#   arrange(Domain, AreaCode, ItemCode, ElementCode, d.source, Year) %>% 
+# write.csv(file = "output/preliminatyData_new.csv") 
 
 
 
@@ -710,37 +711,37 @@ write.csv(file = "output/preliminatyData.csv")
 
 #' ## Mapping tabels from FAOSTAT countries to Outlook countries and regions
 #+echo=FALSE
-options(markdown.HTML.header = system.file('misc', 'datatables.html', package = 'knitr'))
-areaMT <- read_csv("mappingTables/faostat_areas_outlook_areas.csv", 
-                   col_types = cols(
-                     AreaCode = col_integer(),
-                     AreaName = col_character(),
-                     OutlookAreaCode = col_character(),
-                     OutlookAreaName = col_character(),
-                     OutlookStatus = col_character(),
-                     OutlookSubRegion = col_character(),
-                     OutlookBigRegion = col_character(),
-                     OutlookSuperRegion = col_character(),
-                     OutlookSEAsia = col_character()
-                   ))
-
-# Changing encoding
-Encoding(areaMT$AreaName) <- "latin1"
-Encoding(areaMT$OutlookAreaName) <- "latin1"
-# Printing the table
-datatable(areaMT, 
-          rownames=FALSE, 
-          colnames = 
-            c("FS Code", "FS Name", "Outlook Code", "Outlook name",
-              "Status", "Sub Regions", "Big Five", "Super Region",
-              "Southeast Asia"))
-
-
-#' ## Mapping tabel for mapping FAOSTAT items to the Outlook
-#+echo=FALSE
-datatable(itemsMT, style = 'bootstrap', rownames=FALSE)
-
-#' ## Mapping tabel for mapping FAOSTAT elements to the Outlook
-#+echo=FALSE
-datatable(elementsMT, style = 'bootstrap', rownames=FALSE)
-
+# options(markdown.HTML.header = system.file('misc', 'datatables.html', package = 'knitr'))
+# areaMT <- read_csv("mappingTables/faostat_areas_outlook_areas.csv", 
+#                    col_types = cols(
+#                      AreaCode = col_integer(),
+#                      AreaName = col_character(),
+#                      OutlookAreaCode = col_character(),
+#                      OutlookAreaName = col_character(),
+#                      OutlookStatus = col_character(),
+#                      OutlookSubRegion = col_character(),
+#                      OutlookBigRegion = col_character(),
+#                      OutlookSuperRegion = col_character(),
+#                      OutlookSEAsia = col_character()
+#                    ))
+# 
+# # Changing encoding
+# Encoding(areaMT$AreaName) <- "latin1"
+# Encoding(areaMT$OutlookAreaName) <- "latin1"
+# # Printing the table
+# datatable(areaMT, 
+#           rownames=FALSE, 
+#           colnames = 
+#             c("FS Code", "FS Name", "Outlook Code", "Outlook name",
+#               "Status", "Sub Regions", "Big Five", "Super Region",
+#               "Southeast Asia"))
+# 
+# 
+# #' ## Mapping tabel for mapping FAOSTAT items to the Outlook
+# #+echo=FALSE
+# datatable(itemsMT, style = 'bootstrap', rownames=FALSE)
+# 
+# #' ## Mapping tabel for mapping FAOSTAT elements to the Outlook
+# #+echo=FALSE
+# datatable(elementsMT, style = 'bootstrap', rownames=FALSE)
+# 

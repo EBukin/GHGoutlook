@@ -6,7 +6,7 @@ combine_plot_data <-
            n_page = 12) {
     dfp <-
       outlook %>%
-      filter(AreaCode %in% unique(fsActivityData$AreaCode)) %>%
+      filter(AreaCode %in% unique(faostat$AreaCode)) %>%
       mutate(d.source = "Outlook") %>%
       bind_rows(faostat %>%
                   mutate(d.source = "Faostat"))

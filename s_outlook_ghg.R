@@ -366,7 +366,8 @@ lu <-
   agg_all_ol_regions() %>% 
   join_names()
 
-#' # Combining and exporting all emissions not adjusted data
+#' Combining and exporting all emissions not adjusted data
+#' At this stage all computed work was over and a person in ESS started his analysis.
 seaData <- 
   bind_rows(lu, gt) %>% 
   filter(d.source == "Outlook") %>% 
@@ -375,6 +376,8 @@ seaData <-
 
 
 #' ## Adjusting organic soils and cropland --------------------------------------
+#' 
+#' Here below are development stages of the work which were included fro abalysis by the colleague in ESS. 
 #' 
 #' This adjustment is made manually in the file, which we furtherly loaded to
 #'    the main data.
@@ -440,10 +443,7 @@ seaAdjData_part1 <-
 
 
 #' Preparing forest data as a reference
-#' FOREST FOR THE BASE and Extra PARTS -=------------------------------------------
-#' 
-#' 
-#' 
+#' FOREST FOR THE BASE and Extra PARTS -
 #' 
 #' 
 gf_Extra <-
@@ -453,7 +453,7 @@ gf_Extra <-
   filter(ItemCode %in% c("FO", "FC"), ElementCode != "Area")  %>% 
   mutate(d.source = "Outlook") 
 
-# Epanding data with the last available values
+#' Epanding data with the last available values
 gf_Extra <-
   ldply(c(2000:2030), 
         function(x) {
@@ -468,7 +468,7 @@ gf_Extra <-
   fill(Value) %>% 
   ungroup() 
 
-# Adding data from the adjustment table
+#' Adding data from the adjustment table
 gf_Extra <-
   gf_Extra %>% 
   filter(!AreaCode %in% c("MYS", "IDN")) %>% 
@@ -489,7 +489,7 @@ gf_Extra_sea <-
   agg_ol_regions(., regionVar = "OutlookSEAsia") %>%
   filter(AreaCode == "OutlookSEAsia")
 
-# Adding other extra things such as activity data
+#' Adding other extra things such as activity data
 SEA_activity <- 
   bind_rows(list(gm, ge, gu, gp, gr)) %>%
   filter(d.source == "Outlook", AreaCode == "OutlookSEAsia") %>% 
@@ -501,7 +501,7 @@ SEA_activity <-
              ItemCode == "PL", 
              ElementCode == "AH")) %>% 
   mutate(d.source = "Outlook")
-# 
+#' 
 SEA_separate_activity <-
   bind_rows(list(gm, ge, gu, gp, gr)) %>%
   filter(d.source == "Outlook", AreaCode %in% c("LAO", "VNM", "KHM", "IDN", "MYS", "PHL", "THA", "MMR")) %>%
@@ -542,7 +542,7 @@ BurningBiomass <-
   rename(Biomass = Value) %>% 
   select(AreaCode, ItemCode, ElementCode, d.source, Biomass )
 
-# Writing all
+#' Writing all
 export %>% 
   left_join(BurningSavanna , by = c("AreaCode", "ItemCode", "ElementCode", "d.source")) %>%
   left_join(BurningBiomass , by = c("AreaCode", "ItemCode", "ElementCode", "d.source")) %>%

@@ -1,4 +1,4 @@
-
+#' Aggregate totla GHG emissiosn 
 
 agg_total_emissions <-
   function(df, emissionMT = emissionsMT) {

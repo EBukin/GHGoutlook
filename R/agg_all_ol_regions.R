@@ -1,3 +1,4 @@
+#' Aggregate GHG outlook regions (See code for inforamtion)
 agg_all_ol_regions <- 
   function(bindedData) {
   # Aggregating big five

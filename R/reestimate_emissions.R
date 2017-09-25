@@ -58,7 +58,7 @@ reestimate_emissions <-
         by = c("Domain", "AreaCode", "ItemCode", "Year")
       ) %>%
       complete(Domain, AreaCode, ItemCode, Year) %>%
-      gather(Element, EmissionsFactor, 5:length(.)) %>%
+      gather(Element, EmissionsFactor, !! 5:length(.)) %>%
       
       # Adding activity data
       left_join(rename(outlookAct, Activity = Value),

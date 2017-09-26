@@ -40,16 +40,15 @@ adjust_outlook_activity <-
     
     # Adjusting data
     activity <-
-      activity %>%
+      activity  %>% 
       left_join(diff_proj,
                 by = c("Domain", "AreaCode", "ItemCode", "ElementCode", "Year")) %>%
       mutate(Proj = ifelse(!is.na(Proj), TRUE, FALSE)) %>%
-      mutate_(.dots = setNames(str_c("ifelse(Proj,", lagged_dif, ", diff)"), "diff")) %>%
-      
+      mutate_(.dots = setNames(str_c("ifelse(Proj,", lagged_dif, ", diff)"), "diff")) %>% 
       # Adding variable which specifies if we need to adjust anything based on the
       #   Value of the difference compare to the diffThreshold
       mutate(
-        Proj = ifelse(Proj & abs(diff - 1) > diffThreshold, TRUE, FALSE),
+        Proj = ifelse(!is.na(diff) & abs(diff - 1) > diffThreshold, TRUE, Proj),
         Proj = any(Proj, na.rm = TRUE)
       ) %>%
       
@@ -57,7 +56,7 @@ adjust_outlook_activity <-
       fill(diff) %>%
       
       # Adjusting projections if neededs
-      mutate(Outlook = if_else(Proj, Outlook / diff, Outlook)) %>%
+      mutate(Outlook = if_else(Proj, Outlook / diff, Outlook)) %>% 
       ungroup() %>%
       select(-diff,-Proj,-Faostat) %>%
       gather(d.source, Value, Outlook)
